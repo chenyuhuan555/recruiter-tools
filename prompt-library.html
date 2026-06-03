@@ -1,0 +1,2252 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>猎头AI指令库 — Prompt Library</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+<style>
+  :root {
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --success: #16a34a;
+    --danger: #dc2626;
+    --warning: #f59e0b;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  /* ── Header ── */
+  .app-header {
+    border-bottom: 1px solid var(--pico-muted-border-color);
+    padding: 0.75rem 0;
+    position: sticky;
+    top: 0;
+    background: var(--pico-background-color);
+    z-index: 100;
+  }
+
+  .app-header .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .app-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .app-title .icon { font-size: 1.5rem; }
+
+  .sync-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 1rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .sync-badge.synced  { background: #dcfce7; color: #166534; }
+  .sync-badge.pulling { background: #dbeafe; color: #1e40af; }
+  .sync-badge.pushing{ background: #fef3c7; color: #92400e; }
+  .sync-badge.error   { background: #fee2e2; color: #991b1b; }
+  .sync-badge.offline { background: #f3f4f6; color: #6b7280; }
+  .sync-badge.unconfigured { background: #f3f4f6; color: #9ca3af; }
+
+  .sync-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .synced .sync-dot  { background: #16a34a; }
+  .pulling .sync-dot,
+  .pushing .sync-dot { background: #f59e0b; animation: pulse 1s infinite; }
+  .error .sync-dot   { background: #dc2626; }
+  .offline .sync-dot,
+  .unconfigured .sync-dot { background: #9ca3af; }
+
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* ── Toolbar ── */
+  .toolbar {
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--pico-muted-border-color);
+    position: sticky;
+    top: 57px;
+    background: var(--pico-background-color);
+    z-index: 99;
+  }
+
+  .toolbar .container {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .toolbar input { flex: 1; min-width: 180px; }
+
+  .filter-chips {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter-chip {
+    font-size: 0.8rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 1rem;
+    border: 1px solid var(--pico-muted-border-color);
+    cursor: pointer;
+    background: var(--pico-background-color);
+    color: var(--pico-color);
+    transition: all 0.15s;
+    white-space: nowrap;
+    user-select: none;
+  }
+  .filter-chip:hover { border-color: var(--primary); color: var(--primary); }
+  .filter-chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+  .filter-chip.tag-chip.active { background: #6366f1; border-color: #6366f1; }
+
+  /* ── Main Content ── */
+  .main-content {
+    flex: 1;
+    padding: 1.5rem 0 3rem;
+  }
+
+  /* ── Prompt Card ── */
+  .prompt-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .prompt-card {
+    border: 1px solid var(--pico-muted-border-color);
+    border-radius: 10px;
+    padding: 1.25rem;
+    background: var(--pico-background-color);
+    transition: box-shadow 0.2s, border-color 0.2s;
+    position: relative;
+  }
+  .prompt-card:hover {
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    border-color: var(--primary);
+  }
+
+  .prompt-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .prompt-card-title {
+    font-weight: 600;
+    font-size: 1.05rem;
+    margin: 0;
+    color: var(--pico-h1-color);
+  }
+
+  .prompt-card-date {
+    font-size: 0.75rem;
+    color: var(--pico-muted-color);
+    white-space: nowrap;
+  }
+
+  .prompt-card-tags {
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+    margin: 0.5rem 0 0.75rem;
+  }
+
+  .tag-badge {
+    font-size: 0.72rem;
+    padding: 0.15rem 0.55rem;
+    border-radius: 1rem;
+    font-weight: 500;
+  }
+  .tag-badge.tag-label { background: #eef2ff; color: #4338ca; }
+  .tag-badge.model-badge { background: #f0fdf4; color: #166534; }
+  .tag-badge.variant-badge { background: #fff7ed; color: #c2410c; }
+
+  .prompt-card-text {
+    background: var(--pico-card-sectioning-background-color);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 120px;
+    overflow-y: auto;
+    color: var(--pico-color);
+  }
+
+  .prompt-card-notes {
+    font-size: 0.8rem;
+    color: var(--pico-muted-color);
+    margin-top: 0.5rem;
+    font-style: italic;
+  }
+
+  .prompt-card-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .prompt-card-actions button {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.75rem;
+  }
+
+  /* ── Empty State ── */
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--pico-muted-color);
+  }
+  .empty-state .empty-icon { font-size: 4rem; margin-bottom: 1rem; }
+  .empty-state h3 { margin-bottom: 0.5rem; }
+  .empty-state p { margin-bottom: 1.5rem; }
+
+  /* ── Setup Wizard ── */
+  .setup-wizard {
+    max-width: 520px;
+    margin: 3rem auto;
+    padding: 2rem;
+    border: 1px solid var(--pico-muted-border-color);
+    border-radius: 12px;
+    background: var(--pico-card-background-color);
+  }
+  .setup-wizard h2 { margin-bottom: 0.25rem; }
+  .setup-wizard .subtitle { color: var(--pico-muted-color); margin-bottom: 1.5rem; font-size: 0.9rem; }
+  .setup-wizard label { font-weight: 500; margin-bottom: 0.25rem; }
+  .setup-wizard .hint { font-size: 0.8rem; color: var(--pico-muted-color); margin-top: 0.25rem; }
+
+  /* ── Modal ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.15s;
+  }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+  .modal-dialog {
+    background: var(--pico-background-color);
+    border-radius: 12px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 620px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  }
+  .modal-dialog h3 { margin-bottom: 1.25rem; }
+
+  .tag-input-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    padding: 0.4rem;
+    border: 1px solid var(--pico-muted-border-color);
+    border-radius: 6px;
+    min-height: 2.5rem;
+    align-items: center;
+    cursor: text;
+    background: var(--pico-background-color);
+  }
+  .tag-input-wrap:focus-within { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(37,99,235,0.15); }
+
+  .tag-input-wrap .tag-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.78rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 1rem;
+    background: #eef2ff;
+    color: #4338ca;
+    white-space: nowrap;
+  }
+  .tag-input-wrap .tag-pill .remove-tag {
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    line-height: 1;
+    opacity: 0.6;
+  }
+  .tag-input-wrap .tag-pill .remove-tag:hover { opacity: 1; }
+
+  .tag-input-wrap input {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    flex: 1;
+    min-width: 80px;
+    padding: 0.2rem !important;
+    margin: 0 !important;
+    background: transparent !important;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+  }
+
+  /* ── Toast ── */
+  .toast-container {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 300;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .toast {
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #fff;
+    animation: slideIn 0.2s;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    max-width: 360px;
+  }
+  .toast.success { background: #16a34a; }
+  .toast.error   { background: #dc2626; }
+  .toast.info    { background: #2563eb; }
+  @keyframes slideIn { from{transform:translateX(100%);opacity:0} to{transform:translateX(0);opacity:1} }
+
+  /* ── Generate Modal ── */
+  .gen-mode-tab {
+    font-size: 0.9rem;
+    padding: 0.5rem 1.1rem;
+    border-radius: 8px;
+    border: 2px solid var(--pico-muted-border-color);
+    cursor: pointer;
+    background: var(--pico-background-color);
+    color: var(--pico-muted-color);
+    transition: all 0.15s;
+    font-weight: 500;
+  }
+  .gen-mode-tab:hover { border-color: var(--primary); color: var(--primary); }
+  .gen-mode-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+  .gen-tab {
+    font-size: 0.82rem;
+    padding: 0.4rem 0.85rem;
+    border-radius: 8px;
+    border: 1px solid var(--pico-muted-border-color);
+    cursor: pointer;
+    background: var(--pico-background-color);
+    color: var(--pico-color);
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .gen-tab:hover { border-color: var(--primary); }
+  .gen-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+  .gen-tab-content {
+    border: 1px solid var(--pico-muted-border-color);
+    border-radius: 10px;
+    padding: 1.25rem;
+    min-height: 200px;
+    background: var(--pico-card-background-color);
+  }
+
+  .gen-variant-block h4 { margin-top: 0; }
+  .gen-variant-block .search-query {
+    background: var(--pico-code-background-color);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+    font-size: 0.85rem;
+    white-space: pre-wrap;
+    word-break: break-all;
+    margin: 0.75rem 0;
+    line-height: 1.5;
+  }
+  .gen-variant-block .hint-text {
+    font-size: 0.82rem;
+    color: var(--pico-muted-color);
+    margin: 0.5rem 0;
+  }
+  .gen-variant-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .gen-spinner {
+    width: 48px; height: 48px;
+    border: 4px solid var(--pico-muted-border-color);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── PDF Drop Zone ── */
+  .resume-drop-zone {
+    position: relative;
+    border: 2px dashed var(--pico-muted-border-color);
+    border-radius: 8px;
+    transition: all 0.2s;
+    background: var(--pico-card-background-color);
+  }
+  .resume-drop-zone.drag-over {
+    border-color: var(--primary);
+    background: #eff6ff;
+    box-shadow: 0 0 0 4px rgba(37,99,235,0.1);
+  }
+  .resume-drop-zone textarea {
+    border: none !important;
+    border-radius: 6px;
+    box-shadow: none !important;
+    background: transparent !important;
+    margin: 0 !important;
+    min-height: 120px;
+  }
+  .drop-overlay {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: rgba(37,99,235,0.08);
+    border-radius: 6px;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary);
+    pointer-events: none;
+    z-index: 10;
+  }
+  .resume-drop-zone.drag-over .drop-overlay { display: flex; }
+
+  /* ── Job Group ── */
+  .job-group { margin-bottom: 2rem; }
+  .job-group-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    background: linear-gradient(135deg, #eef2ff, #f0f9ff);
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+    border: 1px solid #c7d2fe;
+  }
+  .job-group-icon { font-size: 1.2rem; }
+  .job-group-title { font-weight: 700; font-size: 1rem; flex: 1; }
+  .job-group-count { font-size: 0.8rem; color: var(--pico-muted-color); background: #fff; padding: 0.15rem 0.6rem; border-radius: 1rem; }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .app-header .container { flex-direction: column; align-items: flex-start; }
+    .toolbar { top: 80px; }
+    .toolbar .container { flex-direction: column; align-items: stretch; }
+    .prompt-card-header { flex-direction: column; }
+    .modal-dialog { padding: 1.25rem; width: 95%; }
+  }
+
+  /* ── Settings inline ── */
+  .settings-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.35rem;
+    padding: 0.25rem;
+    line-height: 1;
+    color: var(--pico-muted-color);
+  }
+  .settings-toggle:hover { color: var(--pico-color); }
+
+  .settings-panel {
+    display: none;
+    padding: 1.25rem;
+    border: 1px solid var(--pico-muted-border-color);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    background: var(--pico-card-background-color);
+  }
+  .settings-panel.open { display: block; }
+
+  .stats-bar {
+    font-size: 0.8rem;
+    color: var(--pico-muted-color);
+    text-align: center;
+    padding-top: 1rem;
+  }
+</style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header class="app-header">
+  <div class="container">
+    <h1 class="app-title">
+      <span class="icon">🎯</span> 猎头AI指令库
+    </h1>
+    <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+      <span id="syncBadge" class="sync-badge unconfigured">
+        <span class="sync-dot"></span> <span id="syncLabel">未配置</span>
+      </span>
+      <button id="syncBtn" class="outline secondary" style="font-size:0.8rem;padding:0.3rem 0.75rem;" disabled>🔄 同步</button>
+      <button id="settingsBtn" class="settings-toggle" title="设置">⚙️</button>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ SETTINGS PANEL ═══ -->
+<div class="container">
+  <div id="settingsPanel" class="settings-panel">
+    <div class="grid" style="margin-bottom:0;">
+      <div>
+        <label for="ghToken">🔑 GitHub Token</label>
+        <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+               autocomplete="off" spellcheck="false">
+        <div class="hint" style="font-size:0.75rem;color:var(--pico-muted-color);margin-top:0.25rem;">
+          需要 <code>repo</code> 权限（私有仓库）或 <code>public_repo</code>（公开仓库）。创建地址：<a href="https://github.com/settings/tokens" target="_blank">GitHub Settings → Tokens</a>
+        </div>
+      </div>
+      <div>
+        <label for="ghOwner">📦 仓库所有者</label>
+        <input type="text" id="ghOwner" placeholder="your-username 或 org-name" spellcheck="false">
+      </div>
+    </div>
+    <div class="grid">
+      <div>
+        <label for="ghRepo">📁 仓库名</label>
+        <input type="text" id="ghRepo" placeholder="my-prompts" spellcheck="false">
+      </div>
+      <div>
+        <label for="ghPath">📄 JSON 文件路径</label>
+        <input type="text" id="ghPath" value="prompts.json" placeholder="prompts.json" spellcheck="false">
+      </div>
+    </div>
+    <div class="grid">
+      <div>
+        <label for="ghUser">👤 你的名字（用于标记谁修改了指令）</label>
+        <input type="text" id="ghUser" placeholder="张三" spellcheck="false">
+      </div>
+    </div>
+    <div class="grid">
+      <div>
+        <label for="dsKey">🤖 DeepSeek API Key（用于生成指令）</label>
+        <input type="password" id="dsKey" placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off" spellcheck="false">
+        <div class="hint" style="font-size:0.75rem;color:var(--pico-muted-color);margin-top:0.25rem;">
+          获取地址：<a href="https://platform.deepseek.com/api_keys" target="_blank">platform.deepseek.com → API Keys</a>，新用户有免费额度
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:0.75rem;margin-top:1rem;">
+      <button id="saveSettingsBtn">💾 保存设置</button>
+      <button id="testConnectionBtn" class="secondary">🔍 测试连接</button>
+    </div>
+    <div id="settingsMsg" style="margin-top:0.75rem;font-size:0.85rem;"></div>
+  </div>
+</div>
+
+<!-- ═══ TOOLBAR ═══ -->
+<div class="toolbar">
+  <div class="container">
+    <input type="search" id="searchInput" placeholder="🔍 搜索指令标题、标签、内容..." style="max-width:360px;">
+    <div class="filter-chips">
+      <span style="font-size:0.8rem;color:var(--pico-muted-color);">变体:</span>
+      <span class="filter-chip active" data-filter="variant" data-value="all">全部</span>
+      <span class="filter-chip" data-filter="variant" data-value="A">A 技术</span>
+      <span class="filter-chip" data-filter="variant" data-value="B">B 行业</span>
+      <span class="filter-chip" data-filter="variant" data-value="C">C 学术</span>
+      <span class="filter-chip" data-filter="variant" data-value="D">D 综合</span>
+    </div>
+    <div class="filter-chips">
+      <span style="font-size:0.8rem;color:var(--pico-muted-color);">模型:</span>
+      <span class="filter-chip active" data-filter="model" data-value="all">全部</span>
+      <span class="filter-chip" data-filter="model" data-value="Claude">Claude</span>
+      <span class="filter-chip" data-filter="model" data-value="ChatGPT">ChatGPT</span>
+      <span class="filter-chip" data-filter="model" data-value="DeepSeek">DeepSeek</span>
+      <span class="filter-chip" data-filter="model" data-value="Gemini">Gemini</span>
+      <span class="filter-chip" data-filter="model" data-value="Kimi">Kimi</span>
+    </div>
+    <button id="addBtn" style="white-space:nowrap;">➕ 添加指令</button>
+    <button id="generateBtn" style="white-space:nowrap;background:var(--primary);border-color:var(--primary);">🤖 生成指令</button>
+  </div>
+</div>
+
+<!-- ═══ MAIN CONTENT ═══ -->
+<div class="main-content">
+  <div class="container">
+
+    <!-- Setup Wizard (shown when not configured) -->
+    <div id="setupWizard" class="setup-wizard" style="display:none;">
+      <h2>👋 欢迎使用猎头AI指令库</h2>
+      <p class="subtitle">指令会自动保存在浏览器本地。配置 DeepSeek API Key 即可开始生成指令。<br>GitHub 同步为可选项，用于团队共享和备份。</p>
+      <div class="grid">
+        <div>
+          <label for="wizToken">🔑 GitHub Token</label>
+          <input type="password" id="wizToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" spellcheck="false">
+          <div class="hint">需要 <code>repo</code> 权限（私有仓库）或 <code>public_repo</code>（公开仓库）</div>
+        </div>
+        <div>
+          <label for="wizOwner">📦 仓库所有者</label>
+          <input type="text" id="wizOwner" placeholder="your-username" spellcheck="false">
+        </div>
+      </div>
+      <div class="grid">
+        <div>
+          <label for="wizRepo">📁 仓库名</label>
+          <input type="text" id="wizRepo" placeholder="my-prompts" spellcheck="false">
+        </div>
+        <div>
+          <label for="wizPath">📄 JSON 文件路径</label>
+          <input type="text" id="wizPath" value="prompts.json" placeholder="prompts.json" spellcheck="false">
+        </div>
+      </div>
+      <div class="grid">
+        <div>
+          <label for="wizUser">👤 你的名字</label>
+          <input type="text" id="wizUser" placeholder="张三" spellcheck="false">
+        </div>
+      </div>
+      <div class="grid">
+        <div>
+          <label for="wizDsKey">🤖 DeepSeek API Key（用于生成指令，可选）</label>
+          <input type="password" id="wizDsKey" placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off" spellcheck="false">
+          <div class="hint">获取地址：<a href="https://platform.deepseek.com/api_keys" target="_blank">platform.deepseek.com → API Keys</a></div>
+        </div>
+      </div>
+      <div style="margin-top:1.5rem;">
+        <button id="wizSaveBtn" style="width:100%;">🚀 开始使用</button>
+        <div id="wizMsg" style="margin-top:0.5rem;font-size:0.85rem;"></div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="empty-state" style="display:none;">
+      <div class="empty-icon">📭</div>
+      <h3>还没有保存指令</h3>
+      <p>在 Claude Code 中生成搜索指令后，点击「添加指令」保存到这里</p>
+      <button id="emptyAddBtn">➕ 添加第一条指令</button>
+    </div>
+
+    <!-- Card Grid -->
+    <div id="promptGrid" class="prompt-grid"></div>
+
+    <!-- Stats -->
+    <div id="statsBar" class="stats-bar" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- ═══ TOAST CONTAINER ═══ -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ═══ ADD/EDIT MODAL ═══ -->
+<div id="editModal" class="modal-overlay" style="display:none;">
+  <div class="modal-dialog">
+    <h3 id="editModalTitle">添加指令</h3>
+    <form id="editForm" autocomplete="off">
+      <input type="hidden" id="editId">
+      <div class="grid">
+        <div>
+          <label for="editJobTitle">🏢 岗位名称 *</label>
+          <input type="text" id="editJobTitle" required placeholder="如：某互联网公司 - 高级Java开发工程师">
+        </div>
+      </div>
+      <div class="grid">
+        <div>
+          <label for="editTitle">📌 指令标题</label>
+          <input type="text" id="editTitle" placeholder="如：技术聚焦版">
+        </div>
+      </div>
+      <div class="grid">
+        <div>
+          <label for="editVariant">🎯 变体类型</label>
+          <select id="editVariant">
+            <option value="A">A — 技术技能聚焦</option>
+            <option value="B">B — 行业背景聚焦</option>
+            <option value="C">C — 学术/潜力聚焦</option>
+            <option value="D">D — 综合平衡版</option>
+          </select>
+        </div>
+        <div>
+          <label for="editModel">🤖 来源模型</label>
+          <select id="editModel">
+            <option value="Claude">Claude</option>
+            <option value="ChatGPT">ChatGPT</option>
+            <option value="Gemini">Gemini</option>
+            <option value="DeepSeek">DeepSeek</option>
+            <option value="Kimi">Kimi</option>
+            <option value="其他">其他</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label for="editPromptText">🔍 搜索查询语句 *</label>
+        <textarea id="editPromptText" rows="4" required
+                  placeholder='("Java" OR "Spring Boot") AND ("金融" OR "支付") AND NOT "实习"'></textarea>
+      </div>
+      <div>
+        <label>🏷️ 标签（输入后按回车添加）</label>
+        <div class="tag-input-wrap" id="tagInputWrap">
+          <input type="text" id="tagInput" placeholder="输入标签，按回车添加...">
+        </div>
+      </div>
+      <div>
+        <label for="editNotes">📝 备注 / 使用心得</label>
+        <textarea id="editNotes" rows="2" placeholder="效果如何？有什么注意事项？"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button type="button" id="cancelEditBtn" class="secondary">取消</button>
+        <button type="submit">💾 保存</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ═══ DELETE CONFIRM MODAL ═══ -->
+<div id="deleteModal" class="modal-overlay" style="display:none;">
+  <div class="modal-dialog" style="max-width:400px;text-align:center;">
+    <h3>⚠️ 确认删除</h3>
+    <p id="deleteMsg">确定要删除这条指令吗？删除后将同步到云端，不可恢复。</p>
+    <div class="modal-actions" style="justify-content:center;">
+      <button id="cancelDeleteBtn" class="secondary">取消</button>
+      <button id="confirmDeleteBtn" style="background:var(--danger);border-color:var(--danger);">🗑️ 确认删除</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ GENERATE MODAL ═══ -->
+<div id="generateModal" class="modal-overlay" style="display:none;">
+  <div class="modal-dialog" style="max-width:900px;">
+    <h3>🤖 AI 助手</h3>
+
+    <!-- Mode Tabs -->
+    <div style="display:flex;gap:0.5rem;margin-bottom:1.25rem;flex-wrap:wrap;">
+      <button class="gen-mode-tab active" data-mode="search">🔍 搜索指令 + 评估标准</button>
+      <button class="gen-mode-tab" data-mode="evaluate">📊 仅评估候选人简历</button>
+    </div>
+
+    <!-- Step 1: Input — Search Mode -->
+    <div id="genStep1">
+      <div class="grid">
+        <div>
+          <label for="genJobTitle">🏢 岗位名称 *</label>
+          <input type="text" id="genJobTitle" placeholder="如：某互联网公司 - 高级Java开发工程师">
+        </div>
+      </div>
+      <div id="genSearchInput">
+        <label for="genJD">📋 岗位需求 (JD)</label>
+        <textarea id="genJD" rows="7" placeholder="粘贴客户的原始职位描述...&#10;&#10;示例：&#10;要求5年以上经验，精通Spring Boot微服务架构，有金融支付系统开发经验优先..."></textarea>
+      </div>
+      <div id="genEvalInput" style="display:none;">
+        <p style="font-size:0.85rem;color:var(--pico-muted-color);margin-bottom:0.75rem;">步骤1：粘贴岗位 JD，AI 自动生成评估标准。步骤2：上传简历，AI 评估打分。</p>
+        <div class="grid">
+          <div>
+            <label for="genCriteriaJD">📋 岗位需求 (JD)</label>
+            <textarea id="genCriteriaJD" rows="5" placeholder="粘贴岗位 JD，AI 将自动提取评估标准..."></textarea>
+          </div>
+          <div>
+            <label>📊 评估标准 <span style="font-size:0.75rem;color:var(--pico-muted-color);">（AI 自动生成，可编辑）</span></label>
+            <textarea id="genCriteria" rows="5" placeholder="点击下方按钮，AI 根据 JD 自动生成评估标准..."></textarea>
+          </div>
+        </div>
+        <button id="genCriteriaBtn" class="secondary" style="width:100%;margin-bottom:1rem;">📋 根据 JD 生成评估标准</button>
+        <hr style="border-color:var(--pico-muted-border-color);margin:0.75rem 0;">
+        <label style="font-weight:600;">📄 候选人简历 <span style="font-size:0.75rem;color:var(--pico-muted-color);">（粘贴文本 或 拖拽 PDF 到下方区域）</span></label>
+        <div id="genResumeDrop" class="resume-drop-zone">
+          <textarea id="genResume" rows="6" placeholder="在此粘贴简历文本，或拖拽 PDF 文件到这里..."></textarea>
+          <div id="genDropOverlay" class="drop-overlay">📄 松开以解析 PDF</div>
+          <input type="file" id="genPdfInput" accept=".pdf" style="display:none;">
+        </div>
+        <div id="genPdfName" style="font-size:0.75rem;color:var(--pico-muted-color);margin-top:0.25rem;display:none;"></div>
+      </div>
+      <div style="display:flex;gap:0.75rem;margin-top:1rem;">
+        <button id="genStartBtn" style="background:var(--primary);border-color:var(--primary);">🚀 开始生成</button>
+        <span style="font-size:0.8rem;color:var(--pico-muted-color);align-self:center;">
+          使用 DeepSeek API，约 3-5 秒完成
+        </span>
+      </div>
+      <div id="genError" style="color:#dc2626;font-size:0.85rem;margin-top:0.75rem;display:none;"></div>
+    </div>
+
+    <!-- Step 2: Loading -->
+    <div id="genStep2" style="display:none;text-align:center;padding:2rem 0;">
+      <div class="gen-spinner"></div>
+      <p id="genLoadingMsg" style="margin-top:1rem;color:var(--pico-muted-color);">AI 正在分析岗位需求，生成搜索指令和评估标准...</p>
+    </div>
+
+    <!-- Step 3: Results -->
+    <div id="genStep3" style="display:none;">
+      <!-- Search mode: 4 variant tabs + criteria -->
+      <div id="genSearchTabs" style="display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;">
+        <button class="gen-tab active" data-tab="A">🛠️ A:技术聚焦</button>
+        <button class="gen-tab" data-tab="B">🏭 B:行业聚焦</button>
+        <button class="gen-tab" data-tab="C">🎓 C:学术/潜力</button>
+        <button class="gen-tab" data-tab="D">⚖️ D:综合平衡</button>
+        <button class="gen-tab gen-tab-criteria" data-tab="CRITERIA">📊 评估标准</button>
+      </div>
+      <!-- Evaluate mode: single report -->
+      <div id="genEvalReport" style="display:none;margin-bottom:1rem;"></div>
+      <div id="genTabContent" class="gen-tab-content"></div>
+
+      <!-- Refine / iterate section -->
+      <div id="genRefine" style="margin-top:1rem;padding:1rem;border:1px dashed var(--pico-muted-border-color);border-radius:8px;background:var(--pico-card-background-color);">
+        <label for="genRefineInput" style="font-size:0.85rem;font-weight:600;">💬 补充需求（让 AI 在原基础上修改指令）</label>
+        <div style="display:flex;gap:0.5rem;">
+          <input type="text" id="genRefineInput" placeholder="如：强调金融支付经验，排除电商背景；或：把薪资范围关键词加进去" style="flex:1;">
+          <button id="genRefineBtn" style="white-space:nowrap;">🔄 修改指令</button>
+        </div>
+        <div style="font-size:0.75rem;color:var(--pico-muted-color);margin-top:0.35rem;">AI 会保留之前的生成结果，只根据你的补充要求调整 4 个变体</div>
+      </div>
+
+      <div style="display:flex;gap:0.75rem;margin-top:1rem;justify-content:flex-end;flex-wrap:wrap;">
+        <button id="genSaveAllBtn" class="secondary">💾 一键保存全部 4 个变体</button>
+        <button id="genSaveEvalBtn" class="secondary" style="display:none;">💾 保存评估报告</button>
+        <button id="genCloseBtn">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ JAVASCRIPT ═══ -->
+<script>
+(function() {
+  'use strict';
+
+  // ── DOM refs ──
+  const $ = (sel) => document.querySelector(sel);
+  const $$ = (sel) => document.querySelectorAll(sel);
+
+  // ── State ──
+  let prompts = [];
+  let ghConfig = {};
+  let currentSha = null;
+  let syncStatus = 'unconfigured'; // unconfigured | synced | pulling | pushing | error | offline
+  let pendingDeleteId = null;
+  let editTags = [];
+
+  // ── localStorage keys ──
+  const LS_KEYS = {
+    config: 'promptLib_ghConfig',
+    prompts: 'promptLib_prompts',
+  };
+
+  // ── Local prompts ──
+  function loadLocalPrompts() {
+    try {
+      const raw = localStorage.getItem(LS_KEYS.prompts);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) { return []; }
+  }
+
+  function saveLocalPrompts() {
+    localStorage.setItem(LS_KEYS.prompts, JSON.stringify(prompts));
+  }
+
+  // ── Load config ──
+  function loadConfig() {
+    try {
+      const raw = localStorage.getItem(LS_KEYS.config);
+      ghConfig = raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      ghConfig = {};
+    }
+    return ghConfig;
+  }
+
+  function saveConfig(cfg) {
+    ghConfig = { ...ghConfig, ...cfg };
+    localStorage.setItem(LS_KEYS.config, JSON.stringify(ghConfig));
+  }
+
+  function isConfigured() {
+    return !!(ghConfig.token && ghConfig.owner && ghConfig.repo && ghConfig.path && ghConfig.user);
+  }
+
+  // ── GitHub API helpers ──
+  function ghHeaders() {
+    return {
+      'Authorization': 'Bearer ' + ghConfig.token,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json',
+    };
+  }
+
+  function ghApiUrl() {
+    return `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.path}`;
+  }
+
+  async function ghFetchFile() {
+    const resp = await fetch(ghApiUrl(), { headers: ghHeaders() });
+    if (resp.status === 404) return { exists: false };
+    if (!resp.ok) {
+      const body = await resp.json().catch(() => ({}));
+      throw new Error(body.message || `GitHub API 错误: ${resp.status}`);
+    }
+    const data = await resp.json();
+    // content is base64 encoded
+    const content = JSON.parse(atob(data.content.replace(/\n/g, '')));
+    return { exists: true, sha: data.sha, content };
+  }
+
+  async function ghSaveFile(promptsData, sha, message) {
+    const body = {
+      message: message || '更新指令库',
+      content: utf8Base64(JSON.stringify(promptsData, null, 2)),
+    };
+    if (sha) body.sha = sha;
+
+    const resp = await fetch(ghApiUrl(), {
+      method: 'PUT',
+      headers: ghHeaders(),
+      body: JSON.stringify(body),
+    });
+
+    if (!resp.ok) {
+      const errBody = await resp.json().catch(() => ({}));
+      const err = new Error(errBody.message || `GitHub API 错误: ${resp.status}`);
+      err.status = resp.status;
+      err.conflict = resp.status === 409;
+      throw err;
+    }
+
+    const data = await resp.json();
+    return { sha: data.content.sha };
+  }
+
+  // ── Sync ──
+  function setSyncStatus(status, label) {
+    syncStatus = status;
+    const badge = $('#syncBadge');
+    badge.className = 'sync-badge ' + status;
+    $('#syncLabel').textContent = label || status;
+  }
+
+  async function pullFromGitHub() {
+    if (!isConfigured()) {
+      setSyncStatus('unconfigured', '未配置');
+      return;
+    }
+    setSyncStatus('pulling', '同步中...');
+    try {
+      const result = await ghFetchFile();
+      if (!result.exists) {
+        // File doesn't exist yet, create empty
+        prompts = [];
+        currentSha = null;
+        await pushToGitHub('初始化指令库');
+        setSyncStatus('synced', '已同步');
+        renderAll();
+        return;
+      }
+      prompts = result.content;
+      currentSha = result.sha;
+      setSyncStatus('synced', '已同步');
+      renderAll();
+    } catch (e) {
+      console.error('Pull failed:', e);
+      if (e.message.includes('401') || e.message.includes('Bad credentials')) {
+        setSyncStatus('error', 'Token 无效');
+        showToast('GitHub Token 无效，请检查设置', 'error');
+      } else if (e.message.includes('403') || e.message.includes('rate limit')) {
+        setSyncStatus('error', 'API 限流');
+        showToast('GitHub API 频率限制，请稍后再试', 'error');
+      } else if (e.message.includes('404') || e.message.includes('Not Found')) {
+        setSyncStatus('error', '仓库未找到');
+        showToast('仓库或文件路径不存在，请检查设置', 'error');
+      } else {
+        setSyncStatus('error', '同步失败');
+        showToast('拉取失败: ' + e.message, 'error');
+      }
+      renderAll();
+    }
+  }
+
+  async function pushToGitHub(message) {
+    // Always save locally first
+    saveLocalPrompts();
+
+    if (!isConfigured()) return;
+
+    setSyncStatus('pushing', '保存中...');
+    try {
+      const result = await ghSaveFile(prompts, currentSha, message);
+      currentSha = result.sha;
+      setSyncStatus('synced', '已同步');
+    } catch (e) {
+      console.error('Push failed:', e);
+      if (e.conflict) {
+        setSyncStatus('error', '冲突！请同步');
+        showToast('云端数据已被他人修改，请点击「同步」按钮获取最新数据后再试', 'error');
+      } else {
+        setSyncStatus('error', '云同步失败');
+        showToast('已保存到本地，云同步失败: ' + e.message, 'error');
+      }
+      // Don't throw - local save succeeded
+    }
+  }
+
+  // ── UTF-8 safe base64 ──
+  function utf8Base64(str) {
+    const bytes = new TextEncoder().encode(str);
+    const binStr = Array.from(bytes, b => String.fromCodePoint(b)).join('');
+    return btoa(binStr);
+  }
+
+  // ── UUID ──
+  function uuid() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      const r = Math.random() * 16 | 0;
+      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+  }
+
+  // ── Render ──
+  function getFilteredPrompts() {
+    const search = ($('#searchInput').value || '').toLowerCase();
+    const variantFilter = document.querySelector('.filter-chip.active[data-filter="variant"]')?.dataset.value || 'all';
+    const modelFilter = document.querySelector('.filter-chip.active[data-filter="model"]')?.dataset.value || 'all';
+
+    return prompts.filter(p => {
+      if (variantFilter !== 'all' && p.variant !== variantFilter) return false;
+      if (modelFilter !== 'all' && p.sourceModel !== modelFilter) return false;
+      if (search) {
+        const hay = (p.title + ' ' + (p.tags||[]).join(' ') + ' ' + p.promptText + ' ' + (p.notes||'')).toLowerCase();
+        if (!hay.includes(search)) return false;
+      }
+      return true;
+    });
+  }
+
+  function renderAll() {
+    const setupWiz = $('#setupWizard');
+    const empty = $('#emptyState');
+    const grid = $('#promptGrid');
+    const stats = $('#statsBar');
+
+    const hasGitHub = isConfigured();
+
+    // Show wizard only if NO GitHub AND NO local prompts
+    if (!hasGitHub && prompts.length === 0) {
+      setupWiz.style.display = 'block';
+      empty.style.display = 'none';
+      grid.innerHTML = '';
+      stats.style.display = 'none';
+      setSyncStatus('unconfigured', '本地模式');
+      return;
+    }
+
+    setupWiz.style.display = 'none';
+    $('#syncBtn').disabled = !hasGitHub;
+    if (!hasGitHub && syncStatus === 'unconfigured') {
+      setSyncStatus('unconfigured', '本地模式');
+    }
+
+    const filtered = getFilteredPrompts();
+
+    if (prompts.length === 0) {
+      empty.style.display = 'block';
+      grid.innerHTML = '';
+      stats.style.display = 'none';
+    } else if (filtered.length === 0 && prompts.length > 0) {
+      empty.style.display = 'block';
+      empty.querySelector('h3').textContent = '没有匹配的指令';
+      empty.querySelector('p').textContent = '试试调整搜索条件或筛选器';
+      empty.querySelector('button').style.display = 'none';
+      grid.innerHTML = '';
+      stats.style.display = 'block';
+      stats.textContent = `共 ${prompts.length} 条指令，当前筛选结果 0 条`;
+    } else {
+      empty.style.display = 'none';
+      stats.style.display = 'block';
+      stats.textContent = `共 ${prompts.length} 条指令，显示 ${filtered.length} 条`;
+
+      // Group by jobTitle
+      const groups = {};
+      filtered.forEach(p => {
+        const key = p.jobTitle || '未归属岗位';
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(p);
+      });
+
+      // Render grouped cards
+      let html = '';
+      const variantNames = { A: '技术聚焦', B: '行业聚焦', C: '学术聚焦', D: '综合平衡', CRITERIA: '📊 评估标准', eval: '📊 评估报告' };
+      const modelNames = { Claude: 'Claude', ChatGPT: 'ChatGPT', DeepSeek: 'DeepSeek', Gemini: 'Gemini', Kimi: 'Kimi', '其他': '其他' };
+
+      for (const [jobTitle, jobPrompts] of Object.entries(groups)) {
+        html += `<div class="job-group">
+          <div class="job-group-header">
+            <span class="job-group-icon">🏢</span>
+            <span class="job-group-title">${escHtml(jobTitle)}</span>
+            <span class="job-group-count">${jobPrompts.length} 条指令</span>
+          </div>`;
+
+        jobPrompts.forEach(p => {
+          const tagsHtml = (p.tags || []).map(t => `<span class="tag-badge tag-label">${escHtml(t)}</span>`).join('');
+          const date = new Date(p.createdAt);
+          const dateStr = isNaN(date.getTime()) ? '' : date.toLocaleDateString('zh-CN', { year:'numeric', month:'2-digit', day:'2-digit' });
+          const notesHtml = p.notes ? `<div class="prompt-card-notes">💬 ${escHtml(p.notes)}</div>` : '';
+          const createdByHtml = p.createdBy ? `<span style="font-size:0.72rem;color:var(--pico-muted-color);">👤 ${escHtml(p.createdBy)}</span>` : '';
+
+          html += `
+          <div class="prompt-card" data-id="${p.id}">
+            <div class="prompt-card-header">
+              <h4 class="prompt-card-title">${escHtml(p.title)}</h4>
+              <button class="copy-btn" data-text="${escAttr(p.promptText)}" style="font-size:0.78rem;padding:0.25rem 0.65rem;white-space:nowrap;">📋 复制</button>
+              <span class="prompt-card-date">${dateStr}</span>
+            </div>
+            <div class="prompt-card-tags">
+              <span class="tag-badge variant-badge">${variantNames[p.variant] || p.variant}</span>
+              <span class="tag-badge model-badge">${modelNames[p.sourceModel] || p.sourceModel}</span>
+              ${tagsHtml}
+              ${createdByHtml}
+            </div>
+            <div class="prompt-card-text">${escHtml(p.promptText)}</div>
+            ${notesHtml}
+            <div class="prompt-card-actions">
+              <button class="edit-btn outline secondary" data-id="${p.id}">✏️ 编辑</button>
+              <button class="delete-btn outline contrast" data-id="${p.id}">🗑️ 删除</button>
+            </div>
+          </div>`;
+        });
+
+        html += `</div>`;
+      }
+
+      grid.innerHTML = html;
+    }
+  }
+
+  function escHtml(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function escAttr(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // ── Toast ──
+  function showToast(msg, type) {
+    const container = $('#toastContainer');
+    const toast = document.createElement('div');
+    toast.className = 'toast ' + (type || 'info');
+    toast.textContent = msg;
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transition = 'opacity 0.3s';
+      setTimeout(() => toast.remove(), 300);
+    }, 2500);
+  }
+
+  // ── Copy ──
+  async function copyText(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      showToast('✅ 已复制到剪贴板！', 'success');
+    } catch (e) {
+      // Fallback
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+      showToast('✅ 已复制到剪贴板！', 'success');
+    }
+  }
+
+  // ── Edit Modal ──
+  function openEditModal(promptData) {
+    editTags = promptData ? [...(promptData.tags || [])] : [];
+    $('#editId').value = promptData ? promptData.id : '';
+    $('#editJobTitle').value = promptData ? (promptData.jobTitle || '') : '';
+    $('#editTitle').value = promptData ? promptData.title : '';
+    $('#editVariant').value = promptData ? promptData.variant : 'A';
+    $('#editModel').value = promptData ? promptData.sourceModel : 'Claude';
+    $('#editPromptText').value = promptData ? promptData.promptText : '';
+    $('#editNotes').value = promptData ? (promptData.notes || '') : '';
+    $('#editModalTitle').textContent = promptData ? '编辑指令' : '添加指令';
+    renderTagPills();
+    $('#tagInput').value = '';
+    $('#editModal').style.display = 'flex';
+    $('#editTitle').focus();
+  }
+
+  function closeEditModal() {
+    $('#editModal').style.display = 'none';
+    editTags = [];
+  }
+
+  function renderTagPills() {
+    const wrap = $('#tagInputWrap');
+    const input = $('#tagInput');
+    // Remove existing pills
+    wrap.querySelectorAll('.tag-pill').forEach(el => el.remove());
+    editTags.forEach((tag, i) => {
+      const pill = document.createElement('span');
+      pill.className = 'tag-pill';
+      pill.innerHTML = `${escHtml(tag)} <span class="remove-tag" data-index="${i}">&times;</span>`;
+      wrap.insertBefore(pill, input);
+    });
+  }
+
+  function addEditTag(tag) {
+    tag = tag.trim();
+    if (!tag) return;
+    if (editTags.includes(tag)) return;
+    editTags.push(tag);
+    renderTagPills();
+  }
+
+  function removeEditTag(index) {
+    editTags.splice(index, 1);
+    renderTagPills();
+  }
+
+  async function saveEdit() {
+    const id = $('#editId').value;
+    const jobTitle = $('#editJobTitle').value.trim();
+    const title = $('#editTitle').value.trim();
+    const promptText = $('#editPromptText').value.trim();
+
+    if (!jobTitle || !promptText) {
+      showToast('请填写岗位名称和搜索查询语句', 'error');
+      return false;
+    }
+
+    const now = new Date().toISOString();
+    const data = {
+      id: id || uuid(),
+      jobTitle,
+      title: title || jobTitle,
+      tags: [...editTags],
+      variant: $('#editVariant').value,
+      sourceModel: $('#editModel').value,
+      promptText,
+      notes: $('#editNotes').value.trim(),
+      createdAt: now,
+      createdBy: ghConfig.user || '',
+      updatedAt: now,
+      updatedBy: ghConfig.user || '',
+    };
+
+    if (id) {
+      // Edit existing
+      const idx = prompts.findIndex(p => p.id === id);
+      if (idx >= 0) {
+        data.createdAt = prompts[idx].createdAt;
+        data.createdBy = prompts[idx].createdBy;
+        prompts[idx] = data;
+      }
+    } else {
+      // New
+      prompts.unshift(data);
+    }
+
+    await pushToGitHub(id ? '编辑指令: ' + title : '添加指令: ' + title);
+    closeEditModal();
+    renderAll();
+    const hasGitHub = isConfigured();
+    showToast(hasGitHub ? '✅ 已保存并同步到云端' : '✅ 已保存到本地', 'success');
+    return true;
+  }
+
+  // ── Delete ──
+  function openDeleteModal(id) {
+    pendingDeleteId = id;
+    const p = prompts.find(x => x.id === id);
+    $('#deleteMsg').textContent = p
+      ? `确定要删除「${p.title}」吗？删除后将同步到云端，不可恢复。`
+      : '确定要删除这条指令吗？删除后将同步到云端，不可恢复。';
+    $('#deleteModal').style.display = 'flex';
+  }
+
+  function closeDeleteModal() {
+    $('#deleteModal').style.display = 'none';
+    pendingDeleteId = null;
+  }
+
+  async function confirmDelete() {
+    if (!pendingDeleteId) return;
+    const id = pendingDeleteId;
+    const p = prompts.find(x => x.id === id);
+    prompts = prompts.filter(x => x.id !== id);
+    closeDeleteModal();
+    await pushToGitHub('删除指令: ' + (p ? p.title : id));
+    renderAll();
+    const hasGitHub = isConfigured();
+    showToast(hasGitHub ? '🗑️ 已删除并同步到云端' : '🗑️ 已删除（本地）', 'success');
+  }
+
+  // ── Settings ──
+  function populateSettingsForm() {
+    ['ghToken','ghOwner','ghRepo','ghPath','ghUser'].forEach(id => {
+      const key = id.replace('gh','').toLowerCase();
+      const el = $('#' + id);
+      if (el) el.value = ghConfig[key] || '';
+    });
+    $('#dsKey').value = ghConfig.dsKey || '';
+  }
+
+  function readSettingsForm() {
+    return {
+      token: $('#ghToken').value.trim(),
+      owner: $('#ghOwner').value.trim(),
+      repo: $('#ghRepo').value.trim(),
+      path: $('#ghPath').value.trim() || 'prompts.json',
+      user: $('#ghUser').value.trim(),
+      dsKey: $('#dsKey').value.trim(),
+    };
+  }
+
+  function populateWizForm() {
+    ['wizToken','wizOwner','wizRepo','wizPath','wizUser'].forEach(id => {
+      const key = id.replace('wiz','').toLowerCase();
+      const el = $('#' + id);
+      if (el) el.value = ghConfig[key] || '';
+    });
+    $('#wizDsKey').value = ghConfig.dsKey || '';
+  }
+
+  function readWizForm() {
+    return {
+      token: $('#wizToken').value.trim(),
+      owner: $('#wizOwner').value.trim(),
+      repo: $('#wizRepo').value.trim(),
+      path: $('#wizPath').value.trim() || 'prompts.json',
+      user: $('#wizUser').value.trim(),
+      dsKey: $('#wizDsKey').value.trim(),
+    };
+  }
+
+  async function applySettings(cfg) {
+    if (!cfg.token || !cfg.owner || !cfg.repo || !cfg.path || !cfg.user) {
+      showToast('请填写所有字段', 'error');
+      return;
+    }
+    saveConfig(cfg);
+    populateSettingsForm();
+    populateWizForm();
+    $('#settingsMsg').textContent = '';
+    showToast('✅ 设置已保存', 'success');
+    await pullFromGitHub();
+    $('#settingsPanel').classList.remove('open');
+    $('#setupWizard').style.display = 'none';
+  }
+
+  async function testConnection() {
+    const cfg = readSettingsForm();
+    if (!cfg.token || !cfg.owner || !cfg.repo) {
+      showToast('请先填写 Token、仓库所有者和仓库名', 'error');
+      return;
+    }
+    // Temporarily set config for test
+    const oldCfg = { ...ghConfig };
+    saveConfig(cfg);
+    $('#settingsMsg').textContent = '⏳ 正在测试连接...';
+    $('#settingsMsg').style.color = 'var(--pico-muted-color)';
+    try {
+      const result = await ghFetchFile();
+      if (!result.exists) {
+        $('#settingsMsg').textContent = '✅ 连接成功！文件尚不存在，首次保存时将自动创建。';
+        $('#settingsMsg').style.color = '#16a34a';
+      } else {
+        $('#settingsMsg').textContent = `✅ 连接成功！已找到 ${result.content.length} 条指令。`;
+        $('#settingsMsg').style.color = '#16a34a';
+      }
+    } catch (e) {
+      $('#settingsMsg').textContent = '❌ 连接失败: ' + e.message;
+      $('#settingsMsg').style.color = '#dc2626';
+      saveConfig(oldCfg);
+    }
+  }
+
+  // ── Event Delegation ──
+  document.addEventListener('click', async (e) => {
+    // Copy button
+    if (e.target.closest('.copy-btn')) {
+      const btn = e.target.closest('.copy-btn');
+      copyText(btn.dataset.text);
+    }
+
+    // Edit button
+    if (e.target.closest('.edit-btn')) {
+      const id = e.target.closest('.edit-btn').dataset.id;
+      const p = prompts.find(x => x.id === id);
+      if (p) openEditModal(p);
+    }
+
+    // Delete button
+    if (e.target.closest('.delete-btn')) {
+      const id = e.target.closest('.delete-btn').dataset.id;
+      openDeleteModal(id);
+    }
+
+    // Filter chips
+    if (e.target.closest('.filter-chip')) {
+      const chip = e.target.closest('.filter-chip');
+      const filterGroup = chip.dataset.filter;
+      // Deactivate siblings
+      chip.parentElement.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      renderAll();
+    }
+  });
+
+  // Tag input
+  $('#tagInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addEditTag(e.target.value);
+      e.target.value = '';
+    }
+    if (e.key === 'Backspace' && e.target.value === '' && editTags.length > 0) {
+      removeEditTag(editTags.length - 1);
+    }
+  });
+
+  $('#tagInputWrap').addEventListener('click', (e) => {
+    if (e.target.classList.contains('remove-tag')) {
+      const idx = parseInt(e.target.dataset.index);
+      removeEditTag(idx);
+      return;
+    }
+    $('#tagInput').focus();
+  });
+
+  // Edit form
+  $('#editForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    await saveEdit();
+  });
+
+  $('#cancelEditBtn').addEventListener('click', closeEditModal);
+  $('#editModal').addEventListener('click', (e) => {
+    if (e.target === $('#editModal')) closeEditModal();
+  });
+
+  // Delete modal
+  $('#confirmDeleteBtn').addEventListener('click', confirmDelete);
+  $('#cancelDeleteBtn').addEventListener('click', closeDeleteModal);
+  $('#deleteModal').addEventListener('click', (e) => {
+    if (e.target === $('#deleteModal')) closeDeleteModal();
+  });
+
+  // Add button
+  $('#addBtn').addEventListener('click', () => openEditModal(null));
+  $('#emptyAddBtn').addEventListener('click', () => openEditModal(null));
+  $('#generateBtn').addEventListener('click', openGenerateModal);
+
+  // Generate modal
+  $('#genStartBtn').addEventListener('click', startGenerate);
+  $('#genCloseBtn').addEventListener('click', closeGenerateModal);
+  $('#generateModal').addEventListener('click', (e) => {
+    if (e.target === $('#generateModal')) closeGenerateModal();
+  });
+  $('#genSaveAllBtn').addEventListener('click', saveAllGenVariants);
+  $('#genSaveEvalBtn').addEventListener('click', saveEvalReport);
+  $('#genRefineBtn').addEventListener('click', refineAll);
+  $('#genCriteriaBtn').addEventListener('click', generateCriteria);
+
+  // PDF drag & drop
+  const dropZone = $('#genResumeDrop');
+  ['dragenter','dragover','dragleave','drop'].forEach(evt => {
+    dropZone.addEventListener(evt, (e) => { e.preventDefault(); e.stopPropagation(); });
+  });
+  ['dragenter','dragover'].forEach(evt => {
+    dropZone.addEventListener(evt, () => dropZone.classList.add('drag-over'));
+  });
+  ['dragleave','drop'].forEach(evt => {
+    dropZone.addEventListener(evt, () => dropZone.classList.remove('drag-over'));
+  });
+  dropZone.addEventListener('drop', async (e) => {
+    const file = e.dataTransfer.files[0];
+    if (!file || file.type !== 'application/pdf') {
+      showToast('请拖入 PDF 文件', 'error'); return;
+    }
+    await processPdfFile(file);
+  });
+  // Also allow click to open file picker
+  dropZone.addEventListener('click', () => $('#genPdfInput').click());
+
+  // Shared PDF processing
+  async function processPdfFile(file) {
+    if (typeof pdfjsLib === 'undefined') {
+      showToast('PDF 解析库加载中，请稍后重试', 'error'); return;
+    }
+    $('#genPdfName').style.display = 'block';
+    $('#genPdfName').textContent = '⏳ 正在解析: ' + file.name + '...';
+    try {
+      const text = await parsePdf(file);
+      $('#genResume').val(text);
+      $('#genPdfName').textContent = '✅ 已解析: ' + file.name + ' (' + text.length + ' 字符)';
+      showToast('✅ PDF 解析完成', 'success');
+    } catch (err) {
+      $('#genPdfName').textContent = '❌ 解析失败: ' + file.name;
+      showToast('PDF 解析失败，请尝试粘贴文本', 'error');
+    }
+  }
+
+  // PDF file input (backup)
+  $('#genPdfInput').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    await processPdfFile(file);
+  });
+  // Enter key in refine input
+  $('#genRefineInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); refineAll(); }
+  });
+
+  // Generate modal tab switching (delegation)
+  $('#generateModal').addEventListener('click', (e) => {
+    const modeBtn = e.target.closest('.gen-mode-tab');
+    if (modeBtn) {
+      switchGenModeUI(modeBtn.dataset.mode);
+      return;
+    }
+    const tabBtn = e.target.closest('.gen-tab');
+    if (tabBtn) {
+      switchGenTab(tabBtn.dataset.tab);
+    }
+    const copyBtn = e.target.closest('.gen-copy-btn');
+    if (copyBtn) {
+      copyText(copyBtn.dataset.text);
+    }
+    const saveBtn = e.target.closest('.gen-save-btn');
+    if (saveBtn) {
+      saveGenVariant(saveBtn.dataset.variant);
+    }
+  });
+
+  // Sync button
+  $('#syncBtn').addEventListener('click', pullFromGitHub);
+
+  // Settings
+  $('#settingsBtn').addEventListener('click', () => {
+    populateSettingsForm();
+    $('#settingsPanel').classList.toggle('open');
+  });
+
+  $('#saveSettingsBtn').addEventListener('click', async () => {
+    const cfg = readSettingsForm();
+    await applySettings(cfg);
+  });
+
+  $('#testConnectionBtn').addEventListener('click', testConnection);
+
+  // Setup wizard
+  $('#wizSaveBtn').addEventListener('click', async () => {
+    const cfg = readWizForm();
+    if (!cfg.user) {
+      $('#wizMsg').textContent = '⚠️ 请至少填写你的名字';
+      $('#wizMsg').style.color = '#dc2626';
+      return;
+    }
+    // Save config (even partial — GitHub is optional)
+    saveConfig(cfg);
+    populateSettingsForm();
+
+    // If GitHub is fully configured, try to sync
+    if (cfg.token && cfg.owner && cfg.repo) {
+      $('#wizMsg').textContent = '⏳ 正在连接 GitHub...';
+      $('#wizMsg').style.color = 'var(--pico-muted-color)';
+      try {
+        await pullFromGitHub();
+        $('#setupWizard').style.display = 'none';
+        showToast('🎉 设置完成！已同步云端数据', 'success');
+      } catch (e) {
+        $('#setupWizard').style.display = 'none';
+        showToast('⚠️ GitHub 连接失败，但本地模式已就绪', 'error');
+      }
+    } else {
+      $('#setupWizard').style.display = 'none';
+      showToast('🎉 本地模式已就绪！指令将保存在浏览器中', 'success');
+    }
+    renderAll();
+  });
+
+  // Search input
+  let searchTimer;
+  $('#searchInput').addEventListener('input', () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(renderAll, 200);
+  });
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    // Escape closes modals
+    if (e.key === 'Escape') {
+      if ($('#editModal').style.display === 'flex') closeEditModal();
+      if ($('#deleteModal').style.display === 'flex') closeDeleteModal();
+      if ($('#generateModal').style.display === 'flex') closeGenerateModal();
+      if ($('#settingsPanel').classList.contains('open')) $('#settingsPanel').classList.remove('open');
+    }
+    // Ctrl+K / Cmd+K to focus search
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      $('#searchInput').focus();
+    }
+    // Ctrl+N / Cmd+N to add new
+    if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+      e.preventDefault();
+      openEditModal(null);
+    }
+  });
+
+  // ── Generate ──
+  let genResults = {}; // { A: {...}, B: {...}, C: {...}, D: {...} }
+  let genHistory = []; // Conversation history for refinement
+  let genMode = 'search'; // 'search' | 'evaluate'
+  let evalReportText = ''; // Full evaluation report for evaluate mode
+
+  // ── PDF.js setup ──
+  if (typeof pdfjsLib !== 'undefined') {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+
+  async function parsePdf(file) {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    let fullText = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      const pageText = content.items.map(item => item.str).join(' ');
+      fullText += pageText + '\n';
+    }
+    return fullText.trim();
+  }
+
+  const GEN_SYSTEM_PROMPT = `你是一名专业的技术猎头。你的任务是将原始职位描述（JD）转化为4份不同侧重点的候选人搜索Brief，用于在AI招聘平台（如倍罗 Bello）上精准搜索候选人。
+
+每份 Brief 格式必须严格遵循以下结构（像真正的猎头一样写）：
+
+你是一名专业的技术猎头，请帮我在简历库中搜索符合以下条件的候选人。
+
+【职位】XXX
+【公司】XXX（简要描述公司业务/赛道）
+【地点】XXX
+【薪资】XXX
+
+━━ 必须满足（硬性条件）━━
+（列出 4-6 条硬性要求，每条具体、可验证）
+
+━━ 优先匹配（加分项）━━
+（列出 3-5 条加分项，含行业背景、技术亮点、教育/竞赛等）
+
+━━ 不考虑（排除条件）━━
+（列出 2-3 条排除条件，精准过滤）
+
+四种变体的侧重：
+- 变体A：技术技能聚焦 — 硬性条件以技术栈/工具链为主，加分项突出技术深度
+- 变体B：行业背景聚焦 — 硬性条件以行业经验/业务场景为主，加分项突出行业资源
+- 变体C：潜力/学术聚焦 — 硬性条件以学历/竞赛/论文为主，加分项突出研究能力
+- 变体D：综合平衡版 — 全面覆盖，硬性条件精选最核心的，兼顾技术+行业+潜力
+
+输出格式（严格）：
+
+---A---
+搜索查询：
+[完整 Brief 文本，可直接复制使用]
+查询说明：
+[该变体的策略和适用场景]
+使用建议：
+[推荐在什么平台/情况下使用]
+---B---
+搜索查询：
+[完整 Brief 文本]
+查询说明：
+[...]
+使用建议：
+[...]
+---C---
+搜索查询：
+[完整 Brief 文本]
+查询说明：
+[...]
+使用建议：
+[...]
+---D---
+搜索查询：
+[完整 Brief 文本]
+查询说明：
+[...]
+使用建议：
+[...]
+
+重要规则：
+1. Brief 用中文撰写，技术术语保留英文
+2. 每条硬性条件必须具体可验证，不能模糊
+3. 排除条件要精准，避免误杀
+4. 根据岗位级别（初级/高级/专家）调整深度
+5. 不要使用代码块包裹搜索查询
+
+完成搜索 Brief 后，继续输出评估标准：
+
+---CRITERIA---
+根据JD自动生成候选人简历评估标准：
+
+一、候选人硬性画像（必须完全满足，从JD提取年限/学历/地点等）
+二、技术栈核心关键词（分"必须掌握"和"加分项"，从JD提取）
+三、黄金加分项（行业背景、AI工具使用、全栈能力等）
+四、目标公司人才库（竞品/同行业头部公司）
+五、打分体系（满分100分：硬性门槛40分+技术匹配30分+行业加分30分）
+输出格式：候选人摘要/匹配度得分/核心优势/潜在风险/面试建议问题`;
+
+  function openGenerateModal() {
+    genMode = 'search';
+    $('#genStep1').style.display = 'block';
+    $('#genStep2').style.display = 'none';
+    $('#genStep3').style.display = 'none';
+    $('#genJD').value = '';
+    $('#genJobTitle').value = '';
+    $('#genError').style.display = 'none';
+    genResults = {};
+    genHistory = [];
+    evalReportText = '';
+    switchGenModeUI('search');
+    $('#generateModal').style.display = 'flex';
+    $('#genJobTitle').focus();
+  }
+
+  function closeGenerateModal() {
+    $('#generateModal').style.display = 'none';
+  }
+
+  function switchGenModeUI(mode) {
+    genMode = mode;
+    document.querySelectorAll('.gen-mode-tab').forEach(el => {
+      el.classList.toggle('active', el.dataset.mode === mode);
+    });
+    $('#genSearchInput').style.display = mode === 'search' ? 'block' : 'none';
+    $('#genEvalInput').style.display = mode === 'evaluate' ? 'block' : 'none';
+    $('#genStartBtn').textContent = mode === 'search' ? '🚀 生成搜索指令' : '📊 评估候选人';
+    $('#genStartBtn').style.display = 'inline-block';
+    $('#genCriteriaBtn').style.display = mode === 'evaluate' ? 'block' : 'none';
+    // Reset
+    $('#genStep3').style.display = 'none';
+    $('#genStep1').style.display = 'block';
+    genResults = {};
+    evalReportText = '';
+    genHistory = [];
+    $('#genError').style.display = 'none';
+    if (mode === 'evaluate') {
+      $('#genCriteria').val('');
+      $('#genResume').val('');
+      $('#genPdfName').style.display = 'none';
+    }
+  }
+
+  // Generate criteria from JD in evaluate mode
+  async function generateCriteria() {
+    const jd = $('#genCriteriaJD').value.trim();
+    if (!jd) { showToast('请先粘贴岗位 JD', 'error'); return; }
+
+    const dsKey = ghConfig.dsKey;
+    if (!dsKey) { showToast('请配置 DeepSeek API Key', 'error'); return; }
+
+    $('#genCriteriaBtn').disabled = true;
+    $('#genCriteriaBtn').textContent = '⏳ AI 正在分析 JD 生成评估标准...';
+
+    try {
+      const systemPrompt = `你是一名资深猎头专家。请根据以下岗位JD，生成一份完整的候选人简历评估标准。必须包含：
+
+一、候选人硬性画像（必须完全满足，从JD中提取年限/学历/地点等硬门槛）
+二、技术栈核心关键词（分"必须掌握"和"加分项"，从JD中提取）
+三、黄金加分项（行业背景、AI工具使用、全栈能力等）
+四、目标公司人才库（列出该岗位的竞品/同行业目标公司）
+五、打分体系（满分100分：硬性门槛40分+技术匹配30分+行业加分30分）
+
+输出为可直接使用的评估标准文本，简洁清晰。`;
+
+      const resp = await fetch('https://api.deepseek.com/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + dsKey },
+        body: JSON.stringify({
+          model: 'deepseek-chat',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: '请为以下岗位JD生成评估标准：\n\n' + jd },
+          ],
+          temperature: 0.7, max_tokens: 4096,
+        }),
+      });
+
+      if (!resp.ok) throw new Error((await resp.json().catch(()=>({}))).error?.message || 'API错误');
+      const data = await resp.json();
+      const criteria = data.choices?.[0]?.message?.content || '';
+      $('#genCriteria').val(criteria);
+      showToast('✅ 评估标准已生成，可编辑后使用', 'success');
+    } catch (e) {
+      showToast('生成失败: ' + e.message, 'error');
+    } finally {
+      $('#genCriteriaBtn').disabled = false;
+      $('#genCriteriaBtn').textContent = '📋 根据 JD 生成评估标准';
+    }
+  }
+
+  async function saveEvalReport() {
+    if (!evalReportText) return;
+    const jobTitle = $('#genJobTitle').value.trim();
+    const now = new Date().toISOString();
+    const data = {
+      id: uuid(),
+      jobTitle: jobTitle,
+      title: '评估报告',
+      tags: ['评估报告'],
+      variant: 'eval',
+      sourceModel: 'DeepSeek',
+      promptText: evalReportText.substring(0, 500) + (evalReportText.length > 500 ? '...' : ''),
+      notes: '完整报告见下方',
+      createdAt: now,
+      createdBy: ghConfig.user || '',
+      updatedAt: now,
+      updatedBy: ghConfig.user || '',
+      _fullReport: evalReportText,
+    };
+    prompts.unshift(data);
+    await pushToGitHub('保存评估报告: ' + jobTitle);
+    renderAll();
+    showToast('✅ 评估报告已保存', 'success');
+  }
+
+  async function startGenerate() {
+    const jobTitle = $('#genJobTitle').value.trim();
+    // Validate based on mode
+    if (genMode === 'evaluate') {
+      const criteria = $('#genCriteria').value.trim();
+      const resume = $('#genResume').value.trim();
+      if (!jobTitle) { $('#genError').textContent = '请填写岗位名称'; $('#genError').style.display = 'block'; return; }
+      if (!criteria) { $('#genError').textContent = '请填写评估标准'; $('#genError').style.display = 'block'; return; }
+      if (!resume) { $('#genError').textContent = '请粘贴候选人简历'; $('#genError').style.display = 'block'; return; }
+    } else {
+      if (!jobTitle) { $('#genError').textContent = '请填写岗位名称'; $('#genError').style.display = 'block'; return; }
+      const jd = $('#genJD').value.trim();
+      if (!jd) { $('#genError').textContent = '请粘贴岗位需求 (JD)'; $('#genError').style.display = 'block'; return; }
+    }
+
+    const dsKey = ghConfig.dsKey;
+    if (!dsKey) {
+      $('#genError').textContent = '请先在设置中配置 DeepSeek API Key';
+      $('#genError').style.display = 'block';
+      return;
+    }
+
+    $('#genStep1').style.display = 'none';
+    $('#genError').style.display = 'none';
+    // Update loading message based on mode
+    $('#genLoadingMsg').textContent = genMode === 'evaluate'
+      ? 'AI 正在根据评估标准分析候选人简历...'
+      : 'AI 正在分析岗位需求，生成搜索指令和评估标准...';
+    $('#genStep2').style.display = 'block';
+    $('#genStep3').style.display = 'none';
+
+    try {
+      let messages, systemPrompt, userMessage;
+
+      if (genMode === 'evaluate') {
+        systemPrompt = $('#genCriteria').value.trim();
+        userMessage = '岗位：' + jobTitle + '\n\n请评估以下候选人简历：\n\n' + $('#genResume').value.trim();
+      } else {
+        systemPrompt = GEN_SYSTEM_PROMPT;
+        userMessage = '请为以下岗位需求生成4个搜索指令变体：\n\n' + $('#genJD').value.trim();
+      }
+
+      const resp = await fetch('https://api.deepseek.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + dsKey,
+        },
+        body: JSON.stringify({
+          model: 'deepseek-chat',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userMessage },
+          ],
+          temperature: 0.7,
+          max_tokens: 4096,
+        }),
+      });
+
+      if (!resp.ok) {
+        const errBody = await resp.json().catch(() => ({}));
+        const msg = errBody.error?.message || `API 错误 (${resp.status})`;
+        throw new Error(msg);
+      }
+
+      const data = await resp.json();
+      const content = data.choices?.[0]?.message?.content || '';
+
+      if (genMode === 'evaluate') {
+        // Evaluate mode: single report
+        evalReportText = content;
+
+        // Save conversation history
+        genHistory = [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userMessage },
+          { role: 'assistant', content: content },
+        ];
+
+        // Show results
+        $('#genStep2').style.display = 'none';
+        $('#genStep3').style.display = 'block';
+        $('#genSearchTabs').style.display = 'none';
+        $('#genEvalReport').style.display = 'block';
+        $('#genEvalReport').innerHTML = '<div class="gen-variant-block"><h4>📊 候选人评估报告</h4><div class="search-query" style="max-height:500px;overflow-y:auto;">' + escHtml(content).replace(/\n/g, '<br>') + '</div></div>';
+        $('#genTabContent').innerHTML = '';
+        $('#genRefineInput').value = '';
+        $('#genSaveAllBtn').style.display = 'none';
+        $('#genSaveEvalBtn').style.display = 'inline-block';
+
+        showToast('✅ 评估完成！', 'success');
+      } else {
+        // Search mode: 4 variants
+        genResults = parseGenResponse(content);
+
+        if (!genResults.A && !genResults.B && !genResults.C && !genResults.D) {
+          throw new Error('AI 返回格式异常，请重试');
+        }
+
+        // Save conversation history
+        genHistory = [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userMessage },
+          { role: 'assistant', content: content },
+        ];
+
+        // Show results
+        $('#genStep2').style.display = 'none';
+        $('#genStep3').style.display = 'block';
+        $('#genSearchTabs').style.display = 'flex';
+        $('#genEvalReport').style.display = 'none';
+        $('#genSaveAllBtn').style.display = 'inline-block';
+        $('#genSaveEvalBtn').style.display = 'none';
+        switchGenTab('A');
+        $('#genRefineInput').value = '';
+
+        showToast('✅ 生成完成！点击标签切换变体', 'success');
+      }
+    } catch (e) {
+      $('#genStep2').style.display = 'none';
+      $('#genStep1').style.display = 'block';
+      $('#genError').textContent = '生成失败: ' + e.message;
+      $('#genError').style.display = 'block';
+    }
+  }
+
+  async function refineAll() {
+    const refineInput = $('#genRefineInput').value.trim();
+    if (!refineInput) {
+      showToast('请输入补充需求', 'error');
+      return;
+    }
+
+    if (genHistory.length === 0) {
+      showToast('请先生成指令再修改', 'error');
+      return;
+    }
+
+    const dsKey = ghConfig.dsKey;
+    if (!dsKey) {
+      showToast('请先在设置中配置 DeepSeek API Key', 'error');
+      return;
+    }
+
+    // Show loading in the refine area
+    $('#genRefineBtn').disabled = true;
+    $('#genRefineBtn').textContent = '⏳ 修改中...';
+
+    try {
+      const messages = [
+        ...genHistory,
+        { role: 'user', content: '请根据以下补充要求，修改上面生成的4个搜索指令变体，保持原有格式（---A---到---D---）：\n\n' + refineInput },
+      ];
+
+      const resp = await fetch('https://api.deepseek.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + dsKey,
+        },
+        body: JSON.stringify({
+          model: 'deepseek-chat',
+          messages: messages,
+          temperature: 0.7,
+          max_tokens: 4096,
+        }),
+      });
+
+      if (!resp.ok) {
+        const errBody = await resp.json().catch(() => ({}));
+        throw new Error(errBody.error?.message || `API 错误 (${resp.status})`);
+      }
+
+      const data = await resp.json();
+      const content = data.choices?.[0]?.message?.content || '';
+
+      // Update history
+      genHistory.push(
+        { role: 'user', content: '请根据以下补充要求，修改上面的结果：\n\n' + refineInput },
+        { role: 'assistant', content: content },
+      );
+
+      if (genMode === 'evaluate') {
+        evalReportText = content;
+        $('#genEvalReport').innerHTML = '<div class="gen-variant-block"><h4>📊 候选人评估报告（已更新）</h4><div class="search-query" style="max-height:500px;overflow-y:auto;">' + escHtml(content).replace(/\n/g, '<br>') + '</div></div>';
+      } else {
+        const newResults = parseGenResponse(content);
+        ['A','B','C','D'].forEach(v => {
+          if (newResults[v]) genResults[v] = newResults[v];
+        });
+        if (newResults._criteria) genResults._criteria = newResults._criteria;
+        const activeTab = document.querySelector('.gen-tab.active');
+        switchGenTab(activeTab ? activeTab.dataset.tab : 'A');
+      }
+
+      $('#genRefineInput').value = '';
+      showToast('✅ 已根据补充要求更新', 'success');
+    } catch (e) {
+      showToast('修改失败: ' + e.message, 'error');
+    } finally {
+      $('#genRefineBtn').disabled = false;
+      $('#genRefineBtn').textContent = '🔄 修改指令';
+    }
+  }
+
+  function parseGenResponse(text) {
+    const results = {};
+    const variants = ['A', 'B', 'C', 'D'];
+
+    variants.forEach(v => {
+      // Try to match ---X--- blocks
+      const regex = new RegExp('---' + v + '---\\s*([\\s\\S]*?)(?=---[A-Z]---|---[A-Z]---|$)', 'i');
+      const match = text.match(regex);
+      if (!match) return;
+
+      const block = match[1].trim();
+
+      const queryMatch = block.match(/搜索查询[：:]\s*([\s\S]*?)(?=查询说明[：:]|$)/i);
+      const descMatch = block.match(/查询说明[：:]\s*([\s\S]*?)(?=使用建议[：:]|$)/i);
+      const tipMatch = block.match(/使用建议[：:]\s*([\s\S]*?)$/i);
+
+      results[v] = {
+        query: (queryMatch ? queryMatch[1].trim() : block.substring(0, 200)).replace(/```/g, '').trim(),
+        description: descMatch ? descMatch[1].trim() : '',
+        tip: tipMatch ? tipMatch[1].trim() : '',
+      };
+    });
+
+    // Extract CRITERIA section
+    const criteriaMatch = text.match(/---CRITERIA---\s*([\s\S]*?)$/i);
+    if (criteriaMatch) {
+      results._criteria = criteriaMatch[1].trim();
+    }
+
+    return results;
+  }
+
+  function switchGenTab(tab) {
+    // Update tab buttons
+    document.querySelectorAll('.gen-tab').forEach(el => el.classList.remove('active'));
+    const activeTab = document.querySelector(`.gen-tab[data-tab="${tab}"]`);
+    if (activeTab) activeTab.classList.add('active');
+
+    const content = $('#genTabContent');
+
+    // Handle CRITERIA tab (evaluation criteria)
+    if (tab === 'CRITERIA') {
+      const criteriaText = genResults._criteria || '';
+      content.innerHTML = `
+        <div class="gen-variant-block">
+          <h4>📊 候选人评估标准</h4>
+          <p style="font-size:0.8rem;color:var(--pico-muted-color);margin-bottom:0.75rem;">根据岗位需求自动生成，找到简历后可用此标准评估</p>
+          <div class="search-query" style="max-height:450px;overflow-y:auto;">${escHtml(criteriaText).replace(/\n/g, '<br>')}</div>
+          <div class="gen-variant-actions">
+            <button class="gen-copy-btn" data-text="${escAttr(criteriaText)}">📋 复制标准</button>
+            <button class="gen-save-btn secondary" data-variant="CRITERIA">💾 保存到指令库</button>
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    // Handle A/B/C/D tabs
+    const v = genResults[tab];
+    const tabNames = { A: '技术技能聚焦版 🛠️', B: '行业背景聚焦版 🏭', C: '学术/潜力聚焦版 🎓', D: '综合平衡版 ⚖️' };
+
+    if (!v) {
+      content.innerHTML = '<p style="color:var(--pico-muted-color);">该变体生成失败，请重试</p>';
+      return;
+    }
+
+    const escapedQuery = escHtml(v.query);
+    const escapedDesc = escHtml(v.description);
+    const escapedTip = escHtml(v.tip);
+
+    content.innerHTML = `
+      <div class="gen-variant-block">
+        <h4>${tabNames[tab] || tab}</h4>
+        <p style="font-size:0.85rem;color:var(--pico-muted-color);margin-bottom:0.5rem;">🔍 搜索查询：</p>
+        <div class="search-query">${escapedQuery}</div>
+        ${escapedDesc ? `<p class="hint-text"><strong>📝 查询说明：</strong>${escapedDesc}</p>` : ''}
+        ${escapedTip ? `<p class="hint-text"><strong>💡 使用建议：</strong>${escapedTip}</p>` : ''}
+        <div class="gen-variant-actions">
+          <button class="gen-copy-btn" data-text="${escAttr(v.query)}">📋 复制查询</button>
+          <button class="gen-save-btn secondary" data-variant="${tab}">💾 保存到指令库</button>
+        </div>
+      </div>
+    `;
+  }
+
+  async function saveGenVariant(tab) {
+    const now = new Date().toISOString();
+    const tabNames = { A: '技术聚焦', B: '行业聚焦', C: '学术聚焦', D: '综合平衡', CRITERIA: '评估标准' };
+    const jobTitle = $('#genJobTitle').value.trim();
+
+    let data;
+    if (tab === 'CRITERIA') {
+      const criteriaText = genResults._criteria || '';
+      data = {
+        id: uuid(), jobTitle: jobTitle, title: '📊 评估标准', tags: ['评估标准'],
+        variant: 'CRITERIA', sourceModel: 'DeepSeek',
+        promptText: criteriaText.substring(0, 300) + '...', notes: '',
+        createdAt: now, createdBy: ghConfig.user || '', updatedAt: now, updatedBy: ghConfig.user || '',
+        _fullReport: criteriaText,
+      };
+    } else {
+      const v = genResults[tab];
+      if (!v) return;
+      data = {
+        id: uuid(), jobTitle: jobTitle, title: (tabNames[tab] || tab), tags: [],
+        variant: tab, sourceModel: 'DeepSeek',
+        promptText: v.query,
+        notes: (v.description || '') + (v.tip ? ' | ' + v.tip : ''),
+        createdAt: now, createdBy: ghConfig.user || '', updatedAt: now, updatedBy: ghConfig.user || '',
+      };
+    }
+
+    prompts.unshift(data);
+    await pushToGitHub('添加指令: ' + data.title);
+    renderAll();
+    showToast('✅ 变体' + tab + ' 已保存到本地', 'success');
+  }
+
+  async function saveAllGenVariants() {
+    let saved = 0;
+    const jobTitle = $('#genJobTitle').value.trim();
+    const tabs = ['A', 'B', 'C', 'D', 'CRITERIA'];
+    for (const tab of tabs) {
+      if (tab === 'CRITERIA') {
+        const criteriaText = genResults._criteria || '';
+        if (!criteriaText) continue;
+        const now = new Date().toISOString();
+        prompts.unshift({
+          id: uuid(), jobTitle: jobTitle, title: '📊 评估标准', tags: ['评估标准'],
+          variant: 'CRITERIA', sourceModel: 'DeepSeek',
+          promptText: criteriaText.substring(0, 300) + '...', notes: '',
+          createdAt: now, createdBy: ghConfig.user || '', updatedAt: now, updatedBy: ghConfig.user || '',
+          _fullReport: criteriaText,
+        });
+        saved++;
+        continue;
+      }
+      if (genResults[tab]) {
+        const v = genResults[tab];
+        const now = new Date().toISOString();
+        const tabNames = { A: '技术聚焦', B: '行业聚焦', C: '学术聚焦', D: '综合平衡' };
+
+        prompts.unshift({
+          id: uuid(),
+          jobTitle: jobTitle,
+          title: (tabNames[tab] || tab),
+          tags: [],
+          variant: tab,
+          sourceModel: 'DeepSeek',
+          promptText: v.query,
+          notes: (v.description || '') + (v.tip ? ' | ' + v.tip : ''),
+          createdAt: now,
+          createdBy: ghConfig.user || '',
+          updatedAt: now,
+          updatedBy: ghConfig.user || '',
+        });
+        saved++;
+      }
+    }
+    await pushToGitHub('批量添加指令 (' + saved + '条)');
+    renderAll();
+    showToast('✅ 已保存全部 ' + saved + ' 个变体到本地', 'success');
+  }
+
+  // ── Init ──
+  function init() {
+    loadConfig();
+    populateSettingsForm();
+    populateWizForm();
+
+    // Always load local prompts first
+    prompts = loadLocalPrompts();
+
+    if (isConfigured()) {
+      // GitHub configured: hide wizard, auto-sync from cloud
+      $('#setupWizard').style.display = 'none';
+      pullFromGitHub();
+    } else {
+      // No GitHub: show simplified setup (not blocking)
+      $('#setupWizard').style.display = 'block';
+      setSyncStatus('unconfigured', '本地模式');
+    }
+
+    // Always render what we have locally
+    if (prompts.length > 0) {
+      $('#setupWizard').style.display = 'none';
+    }
+    renderAll();
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
