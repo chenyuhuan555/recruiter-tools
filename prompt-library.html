@@ -720,12 +720,6 @@
                   placeholder='("Java" OR "Spring Boot") AND ("金融" OR "支付") AND NOT "实习"'></textarea>
       </div>
       <div>
-        <label>🏷️ 标签（输入后按回车添加）</label>
-        <div class="tag-input-wrap" id="tagInputWrap">
-          <input type="text" id="tagInput" placeholder="输入标签，按回车添加...">
-        </div>
-      </div>
-      <div>
         <label for="editNotes">📝 备注 / 使用心得</label>
         <textarea id="editNotes" rows="2" placeholder="效果如何？有什么注意事项？"></textarea>
       </div>
@@ -857,7 +851,6 @@
   let currentSha = null;
   let syncStatus = 'unconfigured'; // unconfigured | synced | pulling | pushing | error | offline
   let pendingDeleteId = null;
-  let editTags = [];
 
   // ── localStorage keys ──
   const LS_KEYS = {
@@ -1117,7 +1110,6 @@
           </div>`;
 
         jobPrompts.forEach(p => {
-          const tagsHtml = (p.tags || []).map(t => `<span class="tag-badge tag-label">${escHtml(t)}</span>`).join('');
           const date = new Date(p.createdAt);
           const dateStr = isNaN(date.getTime()) ? '' : date.toLocaleDateString('zh-CN', { year:'numeric', month:'2-digit', day:'2-digit' });
           const notesHtml = p.notes ? `<div class="prompt-card-notes">💬 ${escHtml(p.notes)}</div>` : '';
@@ -1133,7 +1125,6 @@
             <div class="prompt-card-tags">
               <span class="tag-badge variant-badge">${variantNames[p.variant] || p.variant}</span>
               <span class="tag-badge model-badge">${modelNames[p.sourceModel] || p.sourceModel}</span>
-              ${tagsHtml}
               ${createdByHtml}
             </div>
             <div class="prompt-card-text">${escHtml(p.promptText)}</div>
@@ -1197,7 +1188,6 @@
 
   // ── Edit Modal ──
   function openEditModal(promptData) {
-    editTags = promptData ? [...(promptData.tags || [])] : [];
     $('#editId').value = promptData ? promptData.id : '';
     $('#editJobTitle').value = promptData ? (promptData.jobTitle || '') : '';
     $('#editTitle').value = promptData ? promptData.title : '';
@@ -1206,41 +1196,12 @@
     $('#editPromptText').value = promptData ? promptData.promptText : '';
     $('#editNotes').value = promptData ? (promptData.notes || '') : '';
     $('#editModalTitle').textContent = promptData ? '编辑指令' : '添加指令';
-    renderTagPills();
-    $('#tagInput').value = '';
     $('#editModal').style.display = 'flex';
     $('#editTitle').focus();
   }
 
   function closeEditModal() {
     $('#editModal').style.display = 'none';
-    editTags = [];
-  }
-
-  function renderTagPills() {
-    const wrap = $('#tagInputWrap');
-    const input = $('#tagInput');
-    // Remove existing pills
-    wrap.querySelectorAll('.tag-pill').forEach(el => el.remove());
-    editTags.forEach((tag, i) => {
-      const pill = document.createElement('span');
-      pill.className = 'tag-pill';
-      pill.innerHTML = `${escHtml(tag)} <span class="remove-tag" data-index="${i}">&times;</span>`;
-      wrap.insertBefore(pill, input);
-    });
-  }
-
-  function addEditTag(tag) {
-    tag = tag.trim();
-    if (!tag) return;
-    if (editTags.includes(tag)) return;
-    editTags.push(tag);
-    renderTagPills();
-  }
-
-  function removeEditTag(index) {
-    editTags.splice(index, 1);
-    renderTagPills();
   }
 
   async function saveEdit() {
@@ -1259,7 +1220,7 @@
       id: id || uuid(),
       jobTitle,
       title: title || jobTitle,
-      tags: [...editTags],
+      tags: [],
       variant: $('#editVariant').value,
       sourceModel: $('#editModel').value,
       promptText,
@@ -1431,27 +1392,6 @@
       chip.classList.add('active');
       renderAll();
     }
-  });
-
-  // Tag input
-  $('#tagInput').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      addEditTag(e.target.value);
-      e.target.value = '';
-    }
-    if (e.key === 'Backspace' && e.target.value === '' && editTags.length > 0) {
-      removeEditTag(editTags.length - 1);
-    }
-  });
-
-  $('#tagInputWrap').addEventListener('click', (e) => {
-    if (e.target.classList.contains('remove-tag')) {
-      const idx = parseInt(e.target.dataset.index);
-      removeEditTag(idx);
-      return;
-    }
-    $('#tagInput').focus();
   });
 
   // Edit form
