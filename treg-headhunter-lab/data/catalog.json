@@ -1,0 +1,1502 @@
+{
+  "checked_at": "2026-10-28",
+  "endpoints": [
+    {
+      "endpoint": "treg.web.search",
+      "input": {
+        "bodyType": "json",
+        "body": {
+          "q": {
+            "type": "str",
+            "required": false,
+            "note": "identity key (part of q)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "note": "filter — default 10; maximum results, where the provider accepts one"
+          }
+        },
+        "note": "Send everything you know about the subject — treg derives the rest (full_name ⇄ first+last), matches each provider on the variants it accepts ({q}) and sends each provider only the fields it wants. On a miss treg keeps trying providers, cheapest first, within X-Treg-Route-Max-Cost (default $1 per call; misses on per-success providers are free). Options ride as headers, never in the body: X-Treg-Route-Waterfall: 0 (stop at the first miss), X-Treg-Route-Max-Cost: <usd>, X-Treg-Route-Prefer / X-Treg-Route-Exclude: <provider>. The response is {output, raw, _treg: {served_by, tried}}; X-Treg-Served-By names the child."
+      },
+      "cost": {
+        "type": "per_success",
+        "value": 0,
+        "currency": "USD",
+        "per": 1,
+        "unit": "call",
+        "source": "inferred",
+        "confidence": "documented",
+        "checked": null,
+        "varies": true,
+        "note": "NOT free: misses are billed too. the children's range $0–$0.16 per hit, 0% markup; you pay the child that served AND every child tried before it that bills a miss (12 of 19 do), up to X-Treg-Route-Max-Cost (default $1 a call). X-Treg-Route-Exclude them, or X-Treg-Route-Waterfall: 0, to pay for one provider only",
+        "usd": 0
+      },
+      "docs": "",
+      "plan": [
+        {
+          "endpoint_id": "tinyfish.web.search",
+          "accepts": [
+            [
+              "q"
+            ]
+          ],
+          "usd": 0,
+          "hit_rate": 0.8699,
+          "usd_per_hit": 0,
+          "works": 0.876
+        },
+        {
+          "endpoint_id": "crawl4ai.web.search",
+          "accepts": [
+            [
+              "q"
+            ]
+          ],
+          "usd": 0.00015,
+          "hit_rate": 0.8293,
+          "usd_per_hit": 0.0001808754371156397,
+          "works": 0.8214
+        },
+        {
+          "endpoint_id": "spidercloud.web.search",
+          "accepts": [
+            [
+              "q"
+            ]
+          ],
+          "usd": 0.001,
+          "hit_rate": 0.4119,
+          "usd_per_hit": 0.001,
+          "works": 0.4318
+        },
+        {
+          "endpoint_id": "search1api.web.search",
+          "accepts": [
+            [
+              "q"
+            ]
+          ],
+          "usd": 0.001,
+          "hit_rate": 0.3713,
+          "usd_per_hit": 0.001,
+          "works": 0.3799
+        },
+        {
+          "endpoint_id": "perplexity.web.search.fast",
+          "accepts": [
+            [
+              "q"
+            ]
+          ],
+          "usd": 0.001,
+          "hit_rate": 0.9522,
+          "usd_per_hit": 0.0010501995379122034,
+          "works": 0.9543
+        },
+        {
+          "endpoint_id": "serper.web.search",
+          "accepts": [
+            [
+              "q"
+            ]
+          ],
+          "usd": 0.001,
+          "hit_rate": 0.8732,
+          "usd_per_hit": 0.0011452130096197893,
+          "works": 0.89
+        },
+        {
+          "endpoint_id": "parallel.web.search",
+          "accepts": [
+            [
+              "q"
+            ]
+          ],
+          "usd": 0.001,
+          "hit_rate": 0.7595,
+          "usd_per_hit": 0.0013166556945358788,
+          "works": 0.8034
+        },
+        {
+          "endpoint_id": "diffbot.x.web-search",
+          "accepts": [
+            [
+              "q"
+            ]
+          ],
+          "usd": 0.001196,
+          "hit_rate": 0.5847,
+          "usd_per_hit": 0.0020454934154267145,
+          "works": 0.6163
+        },
+        {
+          "endpoint_id": "branddev.web.search",
+          "accepts": [
+            [
+              "q"
+            ]
+          ],
+          "usd": 0.002534,
+          "hit_rate": 0.8644,
+          "usd_per_hit": 0.002534,
+          "works": 0.9932
+        },
+        {
+          "endpoint_id": "keenable.web.search",
+          "accepts": [
+            [
+              "q"
+            ]
+          ],
+          "usd": 0.004,
+          "hit_rate": 0.9615,
+          "usd_per_hit": 0.004160166406656266,
+          "works": 0.9732
+        },
+        {
+          "endpoint_id": "you.web.search",
+          "accepts": [
+            [
+              "q"
+            ]
+          ],
+          "usd": 0.005,
+          "hit_rate": 0.8182,
+          "usd_per_hit": 0.00611097531165974,
+          "works": 0.858
+        },
+        {
+          "endpoint_id": "exa.web.search",
+          "accepts": [
+            [
+              "q"
+            ]
+          ],
+          "usd": 0.007,
+          "hit_rate": 0.986,
+          "usd_per_hit": 0.007099391480730224,
+          "works": 0.9955
+        },
+        {
+          "endpoint_id": "octen.web.search",
+          "accepts": [
+            [
+              "q"
+            ]
+          ],
+          "usd": 0.005,
+          "hit_rate": 0.5526,
+          "usd_per_hit": 0.009048136083966703,
+          "works": 0.571
+        },
+        {
+          "endpoint_id": "firecrawl.web.search",
+          "accepts": [
+            [
+              "q"
+            ]
+          ],
+          "usd": 0.01,
+          "hit_rate": 0.9999,
+          "usd_per_hit": 0.01,
+          "works": 0.9987
+        },
+        {
+          "endpoint_id": "olostep.web.search",
+          "accepts": [
+            [
+              "q"
+            ]
+          ],
+          "usd": 0.01,
+          "hit_rate": 0.6917,
+          "usd_per_hit": 0.014457134595923087,
+          "works": 0.944
+        },
+        {
+          "endpoint_id": "valyu.web.search",
+          "accepts": [
+            [
+              "q"
+            ]
+          ],
+          "usd": 0.015
+        },
+        {
+          "endpoint_id": "tavily.web.search",
+          "accepts": [
+            [
+              "q"
+            ]
+          ],
+          "usd": 0.016,
+          "hit_rate": 0.9432,
+          "usd_per_hit": 0.016963528413910092,
+          "works": 0.9664
+        },
+        {
+          "endpoint_id": "linkup.web.search",
+          "accepts": [
+            [
+              "q"
+            ]
+          ],
+          "usd": 0.055,
+          "hit_rate": 0.8287,
+          "usd_per_hit": 0.055,
+          "works": 0.8688
+        },
+        {
+          "endpoint_id": "scrapegraphai.web.search",
+          "accepts": [
+            [
+              "q"
+            ]
+          ],
+          "usd": 0.16,
+          "hit_rate": 0.6842,
+          "usd_per_hit": 0.16,
+          "works": 1
+        }
+      ],
+      "observed": {
+        "samples": 735008,
+        "decided": 735008,
+        "ok_rate": 0.9866,
+        "p50_ms": null,
+        "p95_ms": null,
+        "last_ok_days": 0,
+        "hit_rate": null,
+        "hit_samples": 0
+      },
+      "note": "目录统计为平台自报，未证明猎头业务效果。"
+    },
+    {
+      "endpoint": "treg.web.extract",
+      "input": {
+        "bodyType": "json",
+        "body": {
+          "url": {
+            "type": "url",
+            "required": false,
+            "note": "identity key (part of url)"
+          }
+        },
+        "note": "Send everything you know about the subject — treg derives the rest (full_name ⇄ first+last), matches each provider on the variants it accepts ({url}) and sends each provider only the fields it wants. On a miss treg keeps trying providers, cheapest first, within X-Treg-Route-Max-Cost (default $1 per call; misses on per-success providers are free). Options ride as headers, never in the body: X-Treg-Route-Waterfall: 0 (stop at the first miss), X-Treg-Route-Max-Cost: <usd>, X-Treg-Route-Prefer / X-Treg-Route-Exclude: <provider>. The response is {output, raw, _treg: {served_by, tried}}; X-Treg-Served-By names the child."
+      },
+      "cost": {
+        "type": "per_success",
+        "value": 0,
+        "currency": "USD",
+        "per": 1,
+        "unit": "call",
+        "source": "inferred",
+        "confidence": "documented",
+        "checked": null,
+        "varies": true,
+        "note": "NOT free: misses are billed too. the children's range $0–$0.01 per hit, 0% markup; you pay the child that served AND every child tried before it that bills a miss (5 of 15 do), up to X-Treg-Route-Max-Cost (default $1 a call). X-Treg-Route-Exclude them, or X-Treg-Route-Waterfall: 0, to pay for one provider only",
+        "usd": 0
+      },
+      "docs": "",
+      "plan": [
+        {
+          "endpoint_id": "tinyfish.web.fetch",
+          "accepts": [
+            [
+              "url"
+            ]
+          ],
+          "usd": 0,
+          "hit_rate": 0.7079,
+          "usd_per_hit": 0,
+          "works": 0.7617
+        },
+        {
+          "endpoint_id": "crawl4ai.web.scrape",
+          "accepts": [
+            [
+              "url"
+            ]
+          ],
+          "usd": 0.00015,
+          "hit_rate": 0.7781,
+          "usd_per_hit": 0.00015,
+          "works": 0.6526
+        },
+        {
+          "endpoint_id": "anyapi.web.scrape",
+          "accepts": [
+            [
+              "url"
+            ]
+          ],
+          "usd": 0.0009,
+          "hit_rate": 0.7195,
+          "usd_per_hit": 0.0009000000000000001,
+          "works": 0.6404
+        },
+        {
+          "endpoint_id": "parallel.web.extract",
+          "accepts": [
+            [
+              "url"
+            ]
+          ],
+          "usd": 0.001,
+          "hit_rate": 0.1957,
+          "usd_per_hit": 0.001,
+          "works": 0.1988
+        },
+        {
+          "endpoint_id": "search1api.web.crawl",
+          "accepts": [
+            [
+              "url"
+            ]
+          ],
+          "usd": 0.001,
+          "hit_rate": 1,
+          "usd_per_hit": 0.001,
+          "works": 0.1925
+        },
+        {
+          "endpoint_id": "olostep.web.scrape",
+          "accepts": [
+            [
+              "url"
+            ]
+          ],
+          "usd": 0.002,
+          "hit_rate": 0.9293,
+          "usd_per_hit": 0.0021521575379317764,
+          "works": 0.7207
+        },
+        {
+          "endpoint_id": "branddev.web.scrape",
+          "accepts": [
+            [
+              "url"
+            ]
+          ],
+          "usd": 0.002534,
+          "hit_rate": 0.5849,
+          "usd_per_hit": 0.002534,
+          "works": 0.7474
+        },
+        {
+          "endpoint_id": "tavily.web.extract",
+          "accepts": [
+            [
+              "url"
+            ]
+          ],
+          "usd": 0.0032,
+          "hit_rate": 0.6302,
+          "usd_per_hit": 0.0032,
+          "works": 0.8068
+        },
+        {
+          "endpoint_id": "keenable.web.fetch",
+          "accepts": [
+            [
+              "url"
+            ]
+          ],
+          "usd": 0.004,
+          "hit_rate": 1,
+          "usd_per_hit": 0.004,
+          "works": 0.1768
+        },
+        {
+          "endpoint_id": "scrapegraphai.web.scrape",
+          "accepts": [
+            [
+              "url"
+            ]
+          ],
+          "usd": 0.004,
+          "hit_rate": 1,
+          "usd_per_hit": 0.004,
+          "works": 0.685
+        },
+        {
+          "endpoint_id": "you.web.contents",
+          "accepts": [
+            [
+              "url"
+            ]
+          ],
+          "usd": 0.001,
+          "hit_rate": 0.2114,
+          "usd_per_hit": 0.004730368968779565,
+          "works": 0.2928
+        },
+        {
+          "endpoint_id": "firecrawl.web.scrape",
+          "accepts": [
+            [
+              "url"
+            ]
+          ],
+          "usd": 0.005,
+          "hit_rate": 0.3997,
+          "usd_per_hit": 0.005,
+          "works": 0.4078
+        },
+        {
+          "endpoint_id": "serper.web.extract",
+          "accepts": [
+            [
+              "url"
+            ]
+          ],
+          "usd": 0.01,
+          "hit_rate": 1,
+          "usd_per_hit": 0.01,
+          "works": 0.7677
+        },
+        {
+          "endpoint_id": "linkup.web.fetch",
+          "accepts": [
+            [
+              "url"
+            ]
+          ],
+          "usd": 0.01,
+          "hit_rate": 1,
+          "usd_per_hit": 0.01,
+          "works": 0.9995
+        },
+        {
+          "endpoint_id": "exa.web.contents.get",
+          "accepts": [
+            [
+              "url"
+            ]
+          ],
+          "usd": 1,
+          "hit_rate": 0.8608,
+          "usd_per_hit": 1.1617100371747213,
+          "works": 0.8917
+        }
+      ],
+      "observed": {
+        "samples": 1025269,
+        "decided": 918828,
+        "ok_rate": 0.8753,
+        "p50_ms": null,
+        "p95_ms": null,
+        "last_ok_days": 0,
+        "hit_rate": null,
+        "hit_samples": 0
+      },
+      "note": "目录统计为平台自报，未证明猎头业务效果。"
+    },
+    {
+      "endpoint": "harvestapi.linkedin.profile.search",
+      "input": {
+        "queryParams": {
+          "search": {
+            "type": "string",
+            "required": false,
+            "note": "Search profiles by name",
+            "example": "Bill Gates"
+          },
+          "currentCompany": {
+            "type": "string",
+            "required": false,
+            "note": "Filter by company ID or Company URL. One value or multiple comma-separated"
+          },
+          "pastCompany": {
+            "type": "string",
+            "required": false,
+            "note": "Filter by past company ID or Company URL. One value or multiple comma-separated"
+          },
+          "school": {
+            "type": "string",
+            "required": false,
+            "note": "Filter by school ID or School URL. One value or multiple comma-separated"
+          },
+          "firstName": {
+            "type": "string",
+            "required": false,
+            "note": "Filter by first name"
+          },
+          "lastName": {
+            "type": "string",
+            "required": false,
+            "note": "Filter by last name"
+          },
+          "title": {
+            "type": "string",
+            "required": false,
+            "note": "Filter by title"
+          },
+          "location": {
+            "type": "string",
+            "required": false,
+            "note": "Filter by location text"
+          },
+          "geoId": {
+            "type": "string",
+            "required": false,
+            "note": "Filter by location as LinkedIn Geo ID. Overrides the location query param. Use the /linkedin/geo-id-search endpoint to find the Geo ID"
+          },
+          "industryId": {
+            "type": "string",
+            "required": false,
+            "note": "Filter by industry ID. One value or multiple comma-separated"
+          },
+          "keywordsCompany": {
+            "type": "string",
+            "required": false,
+            "note": "Filter by keywords in company name"
+          },
+          "keywordsSchool": {
+            "type": "string",
+            "required": false,
+            "note": "Filter by keywords in school name"
+          },
+          "followerOf": {
+            "type": "string",
+            "required": false,
+            "note": "Filter profiles that are followers of a LinkedIn profile. Provide the profile URL or ID. One value or multiple comma-separated"
+          },
+          "page": {
+            "type": "string",
+            "required": false,
+            "note": "Page number, use for pagination",
+            "example": 1
+          }
+        },
+        "note": "Use only the declared query parameters, once each, without a request body. Results are provider-native: inspect element/elements and body status/error; HTTP 200 alone does not prove a hit. Empty results can still be charged. Name searches can work; other searches may return anonymized LinkedIn Member entries without links. Prefer lead search for broader discovery."
+      },
+      "cost": {
+        "type": "per_call",
+        "value": 0.004,
+        "currency": "USD",
+        "per": 1,
+        "unit": "call",
+        "source": "observed",
+        "source_url": "https://docs.harvestapi.io",
+        "checked": "2026-09-10",
+        "confidence": "verified",
+        "note": "Observed on treg’s prepaid Harvest account. Final platform cost follows the response cost, including billed misses and explicit zero. BYOK never charges the treg balance.",
+        "reported_charge": {
+          "path": "cost",
+          "unit": "usd"
+        },
+        "usd": 0.004
+      },
+      "docs": "https://docs.harvestapi.io/linkedin-api-reference/openapi.json",
+      "observed": {
+        "samples": 385444,
+        "decided": 384927,
+        "ok_rate": 0.9999,
+        "p50_ms": 1171,
+        "p95_ms": 3352,
+        "last_ok_days": 0,
+        "hit_rate": null,
+        "hit_samples": 0
+      },
+      "note": "目录统计为平台自报，未证明猎头业务效果。"
+    },
+    {
+      "endpoint": "treg.companies.enrich",
+      "input": {
+        "bodyType": "json",
+        "body": {
+          "domain": {
+            "type": "str",
+            "required": false,
+            "note": "identity key (part of domain)"
+          },
+          "website": {
+            "type": "url",
+            "required": false,
+            "note": "identity key (part of website)"
+          },
+          "name": {
+            "type": "str",
+            "required": false,
+            "note": "identity key (part of name)"
+          },
+          "linkedin_url": {
+            "type": "url",
+            "required": false,
+            "note": "identity key (part of linkedin_url)"
+          },
+          "linkedin_handle": {
+            "type": "str",
+            "required": false,
+            "note": "identity key (part of linkedin_handle)"
+          },
+          "email": {
+            "type": "str",
+            "required": false,
+            "note": "identity key (part of email)"
+          }
+        },
+        "note": "Send everything you know about the subject — treg derives the rest (full_name ⇄ first+last), matches each provider on the variants it accepts ({domain} | {website} | {name} | {linkedin_url} | {linkedin_handle} | {email}) and sends each provider only the fields it wants. On a miss treg keeps trying providers, cheapest first, within X-Treg-Route-Max-Cost (default $1 per call; misses on per-success providers are free). Options ride as headers, never in the body: X-Treg-Route-Waterfall: 0 (stop at the first miss), X-Treg-Route-Max-Cost: <usd>, X-Treg-Route-Prefer / X-Treg-Route-Exclude: <provider>. The response is {output, raw, _treg: {served_by, tried}}; X-Treg-Served-By names the child."
+      },
+      "cost": {
+        "type": "per_success",
+        "value": 0.000495,
+        "currency": "USD",
+        "per": 1,
+        "unit": "call",
+        "source": "inferred",
+        "confidence": "documented",
+        "checked": null,
+        "varies": true,
+        "note": "NOT free: misses are billed too. the children's range $0.000495–$0.2496 per hit, 0% markup; you pay the child that served AND every child tried before it that bills a miss (7 of 28 do), up to X-Treg-Route-Max-Cost (default $1 a call). X-Treg-Route-Exclude them, or X-Treg-Route-Waterfall: 0, to pay for one provider only",
+        "usd": 0.000495
+      },
+      "docs": "",
+      "plan": [
+        {
+          "endpoint_id": "blitzapi.companies.enrich",
+          "accepts": [
+            [
+              "linkedin_url"
+            ]
+          ],
+          "usd": 0.000495,
+          "hit_rate": 0.9325,
+          "usd_per_hit": 0.000495,
+          "works": 1
+        },
+        {
+          "endpoint_id": "thecompaniesapi.companies.enrich",
+          "accepts": [
+            [
+              "domain"
+            ]
+          ],
+          "usd": 0.0019,
+          "hit_rate": 0.6856,
+          "usd_per_hit": 0.0018999999999999998,
+          "works": 0.9998
+        },
+        {
+          "endpoint_id": "thecompaniesapi.companies.enrich_by_email",
+          "accepts": [
+            [
+              "email"
+            ]
+          ],
+          "usd": 0.0019,
+          "hit_rate": 0.1923,
+          "usd_per_hit": 0.0019,
+          "works": 1
+        },
+        {
+          "endpoint_id": "dropleads.companies.enrich",
+          "accepts": [
+            [
+              "domain"
+            ],
+            [
+              "name"
+            ]
+          ],
+          "usd": 0.0018,
+          "hit_rate": 0.4449,
+          "usd_per_hit": 0.004045853000674308,
+          "works": 0.9795
+        },
+        {
+          "endpoint_id": "harvestapi.linkedin.company.profile",
+          "accepts": [
+            [
+              "linkedin_handle"
+            ]
+          ],
+          "usd": 0.004,
+          "hit_rate": 0.892,
+          "usd_per_hit": 0.004484304932735426,
+          "works": 0.9995
+        },
+        {
+          "endpoint_id": "hunter.companies.enrich",
+          "accepts": [
+            [
+              "domain"
+            ]
+          ],
+          "usd": 0.0049,
+          "hit_rate": 0.7881,
+          "usd_per_hit": 0.0049,
+          "works": 0.9999
+        },
+        {
+          "endpoint_id": "tomba.companies.enrich",
+          "accepts": [
+            [
+              "domain"
+            ]
+          ],
+          "usd": 0.0089,
+          "hit_rate": 0.2078,
+          "usd_per_hit": 0.0089,
+          "works": 1
+        },
+        {
+          "endpoint_id": "icypeas.companies.enrich",
+          "accepts": [
+            [
+              "linkedin_url"
+            ]
+          ],
+          "usd": 0.0095,
+          "hit_rate": 0.8605,
+          "usd_per_hit": 0.0095,
+          "works": 1
+        },
+        {
+          "endpoint_id": "companyenrich.companies.enrich.by_properties",
+          "accepts": [
+            [
+              "name"
+            ],
+            [
+              "linkedin_url"
+            ]
+          ],
+          "usd": 0.0098,
+          "hit_rate": 0.9812,
+          "usd_per_hit": 0.009987770077456177,
+          "works": 0.9998
+        },
+        {
+          "endpoint_id": "companyenrich.companies.enrich",
+          "accepts": [
+            [
+              "domain"
+            ]
+          ],
+          "usd": 0.0098,
+          "hit_rate": 0.9353,
+          "usd_per_hit": 0.010477921522506147,
+          "works": 1
+        },
+        {
+          "endpoint_id": "findymail.search.company",
+          "accepts": [
+            [
+              "domain"
+            ]
+          ],
+          "usd": 0.0198,
+          "hit_rate": 0.2968,
+          "usd_per_hit": 0.0198,
+          "works": 0.996
+        },
+        {
+          "endpoint_id": "limadata.companies.enrich",
+          "accepts": [
+            [
+              "domain"
+            ],
+            [
+              "linkedin_url"
+            ]
+          ],
+          "usd": 0.02,
+          "hit_rate": 1,
+          "usd_per_hit": 0.02,
+          "works": 0.9975
+        },
+        {
+          "endpoint_id": "prospeo.companies.enrich",
+          "accepts": [
+            [
+              "domain"
+            ],
+            [
+              "name"
+            ],
+            [
+              "linkedin_url"
+            ]
+          ],
+          "usd": 0.0245,
+          "hit_rate": 1,
+          "usd_per_hit": 0.0245,
+          "works": 1
+        },
+        {
+          "endpoint_id": "leadmagic.companies.enrich",
+          "accepts": [
+            [
+              "domain"
+            ]
+          ],
+          "usd": 0.025,
+          "hit_rate": 0.2778,
+          "usd_per_hit": 0.025,
+          "works": 0.9928
+        },
+        {
+          "endpoint_id": "branddev.brand.retrieve",
+          "accepts": [
+            [
+              "domain"
+            ]
+          ],
+          "usd": 0.02534,
+          "hit_rate": 1,
+          "usd_per_hit": 0.02534,
+          "works": 0.9994
+        },
+        {
+          "endpoint_id": "branddev.brand.retrieve-by-name",
+          "accepts": [
+            [
+              "name"
+            ]
+          ],
+          "usd": 0.02534,
+          "hit_rate": 1,
+          "usd_per_hit": 0.02534,
+          "works": 0.9613
+        },
+        {
+          "endpoint_id": "branddev.brand.retrieve-by-email",
+          "accepts": [
+            [
+              "email"
+            ]
+          ],
+          "usd": 0.02534
+        },
+        {
+          "endpoint_id": "apollo.companies.enrich",
+          "accepts": [
+            [
+              "domain"
+            ]
+          ],
+          "usd": 0.026,
+          "hit_rate": 0.8709,
+          "usd_per_hit": 0.026,
+          "works": 1
+        },
+        {
+          "endpoint_id": "fiber-ai.companies.enrich",
+          "accepts": [
+            [
+              "domain"
+            ]
+          ],
+          "usd": 0.04,
+          "hit_rate": 0.7183,
+          "usd_per_hit": 0.04,
+          "works": 1
+        },
+        {
+          "endpoint_id": "predictleads.companies.enrich",
+          "accepts": [
+            [
+              "domain"
+            ]
+          ],
+          "usd": 0.04,
+          "hit_rate": 0.9874,
+          "usd_per_hit": 0.04051043143609479,
+          "works": 0.9994
+        },
+        {
+          "endpoint_id": "sumble.organizations",
+          "accepts": [
+            [
+              "domain"
+            ],
+            [
+              "name"
+            ]
+          ],
+          "usd": 0.03,
+          "hit_rate": 0.7357,
+          "usd_per_hit": 0.04077749082506456,
+          "works": 1
+        },
+        {
+          "endpoint_id": "wiza.companies.enrich",
+          "accepts": [
+            [
+              "domain"
+            ],
+            [
+              "name"
+            ]
+          ],
+          "usd": 0.05,
+          "hit_rate": 1,
+          "usd_per_hit": 0.05,
+          "works": 1
+        },
+        {
+          "endpoint_id": "contactout.companies.enrich",
+          "accepts": [
+            [
+              "domain"
+            ]
+          ],
+          "usd": 0.02,
+          "hit_rate": 0.2401,
+          "usd_per_hit": 0.08329862557267805,
+          "works": 1
+        },
+        {
+          "endpoint_id": "pdl.companies.enrich",
+          "accepts": [
+            [
+              "domain"
+            ]
+          ],
+          "usd": 0.1,
+          "hit_rate": 1,
+          "usd_per_hit": 0.1,
+          "works": 1
+        },
+        {
+          "endpoint_id": "enrichlayer.company.profile",
+          "accepts": [
+            [
+              "linkedin_url"
+            ]
+          ],
+          "usd": 0.1,
+          "hit_rate": 1,
+          "usd_per_hit": 0.1,
+          "works": 1
+        },
+        {
+          "endpoint_id": "aviato.companies.enrich",
+          "accepts": [
+            [
+              "domain"
+            ]
+          ],
+          "usd": 0.15,
+          "hit_rate": 0.7656,
+          "usd_per_hit": 0.15,
+          "works": 1
+        },
+        {
+          "endpoint_id": "lusha.companies.enrich",
+          "accepts": [
+            [
+              "domain"
+            ]
+          ],
+          "usd": 0.2496,
+          "hit_rate": 0.8277,
+          "usd_per_hit": 0.24959999999999996,
+          "works": 1
+        },
+        {
+          "endpoint_id": "datagma.companies.enrich",
+          "accepts": [
+            [
+              "domain"
+            ],
+            [
+              "website"
+            ],
+            [
+              "name"
+            ],
+            [
+              "linkedin_url"
+            ],
+            [
+              "email"
+            ]
+          ],
+          "usd": 0.02258,
+          "hit_rate": 0.9239,
+          "usd_per_hit": 0.02258,
+          "works": 0.9896,
+          "skipped": "datagma is paused on this deployment"
+        }
+      ],
+      "observed": {
+        "samples": 670816,
+        "decided": 670586,
+        "ok_rate": 0.8551,
+        "p50_ms": null,
+        "p95_ms": null,
+        "last_ok_days": 0,
+        "hit_rate": null,
+        "hit_samples": 0
+      },
+      "note": "目录统计为平台自报，未证明猎头业务效果。"
+    },
+    {
+      "endpoint": "treg.people.email.find",
+      "input": {
+        "bodyType": "json",
+        "body": {
+          "domain": {
+            "type": "str",
+            "required": false,
+            "note": "identity key (part of domain+full_name, domain+first_name+last_name)"
+          },
+          "full_name": {
+            "type": "str",
+            "required": false,
+            "note": "identity key (part of domain+full_name)"
+          },
+          "first_name": {
+            "type": "str",
+            "required": false,
+            "note": "identity key (part of domain+first_name+last_name)"
+          },
+          "last_name": {
+            "type": "str",
+            "required": false,
+            "note": "identity key (part of domain+first_name+last_name)"
+          },
+          "linkedin_url": {
+            "type": "url",
+            "required": false,
+            "note": "identity key (part of linkedin_url)"
+          },
+          "linkedin_handle": {
+            "type": "str",
+            "required": false,
+            "note": "identity key (part of linkedin_handle)"
+          }
+        },
+        "note": "Send everything you know about the subject — treg derives the rest (full_name ⇄ first+last), matches each provider on the variants it accepts ({domain, full_name} | {domain, first_name, last_name} | {linkedin_url} | {linkedin_handle}) and sends each provider only the fields it wants. On a miss treg keeps trying providers, cheapest first, within X-Treg-Route-Max-Cost (default $1 per call; misses on per-success providers are free). Options ride as headers, never in the body: X-Treg-Route-Waterfall: 0 (stop at the first miss), X-Treg-Route-Max-Cost: <usd>, X-Treg-Route-Prefer / X-Treg-Route-Exclude: <provider>. The response is {output, raw, _treg: {served_by, tried}}; X-Treg-Served-By names the child. X-Treg-Route-Verify: true checks a hit with treg.people.email.verify in the same call, at that call's own price, and reports it in _treg.verification {verdict, checked, served_by, cost_micro}."
+      },
+      "cost": {
+        "type": "per_success",
+        "value": 0.000495,
+        "currency": "USD",
+        "per": 1,
+        "unit": "call",
+        "source": "inferred",
+        "confidence": "documented",
+        "checked": null,
+        "varies": true,
+        "note": "NOT free: misses are billed too. the children's range $0.000495–$0.15 per hit, 0% markup; you pay the child that served AND every child tried before it that bills a miss (1 of 25 do), up to X-Treg-Route-Max-Cost (default $1 a call). X-Treg-Route-Exclude them, or X-Treg-Route-Waterfall: 0, to pay for one provider only",
+        "usd": 0.000495
+      },
+      "docs": "",
+      "plan": [
+        {
+          "endpoint_id": "blitzapi.people.email.find",
+          "accepts": [
+            [
+              "linkedin_url"
+            ]
+          ],
+          "usd": 0.000495,
+          "hit_rate": 0.4093,
+          "usd_per_hit": 0.000495,
+          "works": 0.9998
+        },
+        {
+          "endpoint_id": "quickenrich.people.email.find",
+          "accepts": [
+            [
+              "linkedin_url"
+            ],
+            [
+              "domain",
+              "first_name",
+              "last_name"
+            ]
+          ],
+          "usd": 0.004834,
+          "hit_rate": 0.2993,
+          "usd_per_hit": 0.004834,
+          "works": 0.9997
+        },
+        {
+          "endpoint_id": "trykitt.people.email.find",
+          "accepts": [
+            [
+              "domain",
+              "full_name"
+            ],
+            [
+              "domain",
+              "first_name",
+              "last_name"
+            ]
+          ],
+          "usd": 0.005,
+          "hit_rate": 0.3527,
+          "usd_per_hit": 0.005,
+          "works": 0.9996
+        },
+        {
+          "endpoint_id": "aiark.people.email.find",
+          "accepts": [
+            [
+              "linkedin_url"
+            ]
+          ],
+          "usd": 0.005267,
+          "hit_rate": 0.1966,
+          "usd_per_hit": 0.005267,
+          "works": 0.9962
+        },
+        {
+          "endpoint_id": "tomba.people.email.find",
+          "accepts": [
+            [
+              "domain",
+              "full_name"
+            ],
+            [
+              "domain",
+              "first_name",
+              "last_name"
+            ]
+          ],
+          "usd": 0.0089,
+          "hit_rate": 0.1914,
+          "usd_per_hit": 0.0089,
+          "works": 0.9972
+        },
+        {
+          "endpoint_id": "tomba.people.email.find.linkedin",
+          "accepts": [
+            [
+              "linkedin_url"
+            ]
+          ],
+          "usd": 0.0089,
+          "hit_rate": 0.3582,
+          "usd_per_hit": 0.0089,
+          "works": 0.9941
+        },
+        {
+          "endpoint_id": "moltsets.people.email.find.name",
+          "accepts": [
+            [
+              "domain",
+              "full_name"
+            ],
+            [
+              "domain",
+              "first_name",
+              "last_name"
+            ]
+          ],
+          "usd": 0.01,
+          "hit_rate": 0.0708,
+          "usd_per_hit": 0.01,
+          "works": 1
+        },
+        {
+          "endpoint_id": "dropleads.people.email.find",
+          "accepts": [
+            [
+              "domain",
+              "first_name",
+              "last_name"
+            ]
+          ],
+          "usd": 0.018,
+          "hit_rate": 0.2335,
+          "usd_per_hit": 0.018,
+          "works": 0.9973
+        },
+        {
+          "endpoint_id": "findymail.search.business-profile",
+          "accepts": [
+            [
+              "linkedin_url"
+            ]
+          ],
+          "usd": 0.0198,
+          "hit_rate": 0.2045,
+          "usd_per_hit": 0.0198,
+          "works": 0.9987
+        },
+        {
+          "endpoint_id": "findymail.search.name",
+          "accepts": [
+            [
+              "domain",
+              "full_name"
+            ],
+            [
+              "domain",
+              "first_name",
+              "last_name"
+            ]
+          ],
+          "usd": 0.0198,
+          "hit_rate": 0.1466,
+          "usd_per_hit": 0.0198,
+          "works": 0.9996
+        },
+        {
+          "endpoint_id": "limadata.people.email.find.name",
+          "accepts": [
+            [
+              "domain",
+              "full_name"
+            ],
+            [
+              "domain",
+              "first_name",
+              "last_name"
+            ]
+          ],
+          "usd": 0.02,
+          "hit_rate": 0.3189,
+          "usd_per_hit": 0.02,
+          "works": 0.9974
+        },
+        {
+          "endpoint_id": "anymailfinder.people.email.find",
+          "accepts": [
+            [
+              "domain",
+              "full_name"
+            ],
+            [
+              "domain",
+              "first_name",
+              "last_name"
+            ],
+            [
+              "linkedin_url"
+            ]
+          ],
+          "usd": 0.02,
+          "hit_rate": 0.0796,
+          "usd_per_hit": 0.02,
+          "works": 1
+        },
+        {
+          "endpoint_id": "prospeo.people.email.find",
+          "accepts": [
+            [
+              "domain",
+              "full_name"
+            ],
+            [
+              "domain",
+              "first_name",
+              "last_name"
+            ],
+            [
+              "linkedin_url"
+            ]
+          ],
+          "usd": 0.0245,
+          "hit_rate": 0.132,
+          "usd_per_hit": 0.0245,
+          "works": 0.9999
+        },
+        {
+          "endpoint_id": "hunter.people.email.find",
+          "accepts": [
+            [
+              "domain",
+              "full_name"
+            ],
+            [
+              "domain",
+              "first_name",
+              "last_name"
+            ]
+          ],
+          "usd": 0.0245,
+          "hit_rate": 0.0811,
+          "usd_per_hit": 0.0245,
+          "works": 0.9998
+        },
+        {
+          "endpoint_id": "leadsforge.people.email.find",
+          "accepts": [
+            [
+              "domain",
+              "first_name",
+              "last_name"
+            ],
+            [
+              "linkedin_url"
+            ]
+          ],
+          "usd": 0.0245,
+          "hit_rate": 0.0559,
+          "usd_per_hit": 0.0245,
+          "works": 0.9993
+        },
+        {
+          "endpoint_id": "leadmagic.people.email.find",
+          "accepts": [
+            [
+              "domain",
+              "full_name"
+            ],
+            [
+              "domain",
+              "first_name",
+              "last_name"
+            ]
+          ],
+          "usd": 0.025,
+          "hit_rate": 0.0271,
+          "usd_per_hit": 0.025,
+          "works": 0.992
+        },
+        {
+          "endpoint_id": "fiber-ai.people.contacts.reveal",
+          "accepts": [
+            [
+              "linkedin_url"
+            ]
+          ],
+          "usd": 0.04,
+          "hit_rate": 0.2239,
+          "usd_per_hit": 0.04,
+          "works": 0.9965
+        },
+        {
+          "endpoint_id": "limadata.people.email.find.linkedin",
+          "accepts": [
+            [
+              "linkedin_url"
+            ]
+          ],
+          "usd": 0.06,
+          "hit_rate": 0.2505,
+          "usd_per_hit": 0.06,
+          "works": 0.9977
+        },
+        {
+          "endpoint_id": "fiber-ai.people.contacts.turbo",
+          "accepts": [
+            [
+              "linkedin_url"
+            ]
+          ],
+          "usd": 0.06,
+          "hit_rate": 0.0707,
+          "usd_per_hit": 0.06,
+          "works": 0.9965
+        },
+        {
+          "endpoint_id": "wiza.people.email.find",
+          "accepts": [
+            [
+              "domain",
+              "full_name"
+            ],
+            [
+              "domain",
+              "first_name",
+              "last_name"
+            ],
+            [
+              "linkedin_url"
+            ]
+          ],
+          "usd": 0.075,
+          "hit_rate": 0.0758,
+          "usd_per_hit": 0.075,
+          "works": 0.9995
+        },
+        {
+          "endpoint_id": "aviato.people.email.find",
+          "accepts": [
+            [
+              "linkedin_url"
+            ]
+          ],
+          "usd": 0.08,
+          "hit_rate": 0.1371,
+          "usd_per_hit": 0.08,
+          "works": 0.9999
+        },
+        {
+          "endpoint_id": "harvestapi.linkedin.user.profile.email",
+          "accepts": [
+            [
+              "linkedin_handle"
+            ]
+          ],
+          "usd": 0.02,
+          "hit_rate": 0.1783,
+          "usd_per_hit": 0.11217049915872127,
+          "works": 0.9996
+        },
+        {
+          "endpoint_id": "sixtyfour.people.email.find.work",
+          "accepts": [
+            [
+              "domain",
+              "full_name"
+            ],
+            [
+              "domain",
+              "first_name",
+              "last_name"
+            ],
+            [
+              "linkedin_url"
+            ]
+          ],
+          "usd": 0.12,
+          "hit_rate": 0.1734,
+          "usd_per_hit": 0.12,
+          "works": 0.9732
+        },
+        {
+          "endpoint_id": "contactout.people.contact.work",
+          "accepts": [
+            [
+              "linkedin_url"
+            ]
+          ],
+          "usd": 0.15,
+          "hit_rate": 0.3284,
+          "usd_per_hit": 0.15,
+          "works": 0.9989
+        },
+        {
+          "endpoint_id": "datagma.people.email.find",
+          "accepts": [
+            [
+              "domain",
+              "full_name"
+            ],
+            [
+              "domain",
+              "first_name",
+              "last_name"
+            ]
+          ],
+          "usd": 0.02258,
+          "hit_rate": 0.0317,
+          "usd_per_hit": 0.02258,
+          "works": 0.9999,
+          "skipped": "datagma is paused on this deployment"
+        }
+      ],
+      "observed": {
+        "samples": 3652647,
+        "decided": 3652056,
+        "ok_rate": 0.9458,
+        "p50_ms": null,
+        "p95_ms": null,
+        "last_ok_days": 0,
+        "hit_rate": null,
+        "hit_samples": 0
+      },
+      "note": "目录统计为平台自报，未证明猎头业务效果。"
+    }
+  ]
+}

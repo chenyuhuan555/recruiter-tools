@@ -1,0 +1,559 @@
+{
+  "date": "2026-10-28",
+  "searches": [
+    {
+      "query": "中国 招聘 人力资源 SaaS AI 产品经理 北森 Moka 官网",
+      "elapsed_ms": 17800,
+      "call_id": "5a06728f44b84b94b066dc7968866c08",
+      "status": 200,
+      "retry_after": null,
+      "endpoint_id": "treg.web.search",
+      "replayed": null,
+      "body": {
+        "output": {
+          "results": [
+            {
+              "snippet": "Jun 26, 2026 — IDC最新报告显示，北森连续十年蝉联中国HCM SaaS市场第一，CoreHR、招聘管理、绩效管理三大核心子市场连续五年第一。本文解读报告数据背后的战略逻辑 ...",
+              "source": "gg",
+              "title": "IDC报告：北森连续十年蝉联中国HCM SaaS市场第一",
+              "url": "https://www.beisen.com/res"
+            },
+            {
+              "snippet": "Dec 23, 2025 — 适合 Moka 是一款新生代的SaaS 智能化招聘管理系统, 包含三大核心模块:聚合招聘渠道,统一管理招聘流程,提升各节点转化率,促进协同",
+              "source": "gg",
+              "title": "选型不踩坑：Top8 HR SaaS人力资源管理系统全景对比指南",
+              "url": "https://www.mokahr.com/blog"
+            },
+            {
+              "snippet": "Moka 是一款新生代的SaaS 智能化招聘管理系统， 包含三大核心模块：聚合招聘渠道，统一管理招聘流程，提升各节点转化率，促进协同； 积累企业人才库，自动且有效的进行持续 ...Read more",
+              "source": "gg",
+              "title": "HR saas – 第119页– Moka人力资源管理系统",
+              "url": "https://www.mokahr.com/page"
+            },
+            {
+              "snippet": "依托自研PaaS平台，北森打造行业领先的一体化HR SaaS，覆盖招聘、测评、人事、假勤、薪酬、绩效、继任、学习等全场景，累计服务超6000家中大型客户（含70%财富中国500强） ...Read more",
+              "source": "gg",
+              "title": "北森招聘",
+              "url": "https://beisen.zhiye.com"
+            },
+            {
+              "snippet": "北森HRSaaS一体化人才管理云平台,为企业提供覆盖人才测评、招聘管理、绩效管理、组织人事、薪酬、假勤、继任、调查、Onboarding等业务全流程的一体化HR SaaS软件",
+              "source": "gg",
+              "title": "北森HRSaaS软件-人才测评、招聘、绩效、人力资源管理等 ...",
+              "url": "https://www.beisen.com"
+            },
+            {
+              "snippet": "MokaHRSaaS人力资源管理系统提供全面的招聘管理系统与人事管理系统，功能涵盖招聘管理、员工入离职管理、薪酬管理、绩效管理、假勤管理、组织人事管理等， ...",
+              "source": "gg",
+              "title": "Moka人力资源管理系统-企业一体化招聘管理系统和人事管理 ...",
+              "url": "https://www.mokahr.com"
+            },
+            {
+              "snippet": "Dec 1, 2025 — 北森HRSaaS一体化人才管理云平台,为企业提供覆盖人才测评、招聘管理、绩效管理、组织人事、薪酬、假勤、继任、调查、Onboarding",
+              "source": "gg",
+              "title": "招聘、绩效、人力资源管理等HRSaaS一体化人才管理云平台",
+              "url": "https://www.beisen.com/news"
+            }
+          ],
+          "count": 7
+        },
+        "raw": {
+          "cached": false,
+          "engines": [
+            {
+              "engine": "google",
+              "fetch_ms": 368,
+              "ms": 2045,
+              "n": 10,
+              "parse_ms": 3
+            }
+          ],
+          "ms": 2772,
+          "n": 7,
+          "results": [
+            {
+              "snippet": "Jun 26, 2026 — IDC最新报告显示，北森连续十年蝉联中国HCM SaaS市场第一，CoreHR、招聘管理、绩效管理三大核心子市场连续五年第一。本文解读报告数据背后的战略逻辑 ...",
+              "source": "gg",
+              "title": "IDC报告：北森连续十年蝉联中国HCM SaaS市场第一",
+              "url": "https://www.beisen.com/res"
+            },
+            {
+              "snippet": "Dec 23, 2025 — 适合 Moka 是一款新生代的SaaS 智能化招聘管理系统, 包含三大核心模块:聚合招聘渠道,统一管理招聘流程,提升各节点转化率,促进协同",
+              "source": "gg",
+              "title": "选型不踩坑：Top8 HR SaaS人力资源管理系统全景对比指南",
+              "url": "https://www.mokahr.com/blog"
+            },
+            {
+              "snippet": "Moka 是一款新生代的SaaS 智能化招聘管理系统， 包含三大核心模块：聚合招聘渠道，统一管理招聘流程，提升各节点转化率，促进协同； 积累企业人才库，自动且有效的进行持续 ...Read more",
+              "source": "gg",
+              "title": "HR saas – 第119页– Moka人力资源管理系统",
+              "url": "https://www.mokahr.com/page"
+            },
+            {
+              "snippet": "依托自研PaaS平台，北森打造行业领先的一体化HR SaaS，覆盖招聘、测评、人事、假勤、薪酬、绩效、继任、学习等全场景，累计服务超6000家中大型客户（含70%财富中国500强） ...Read more",
+              "source": "gg",
+              "title": "北森招聘",
+              "url": "https://beisen.zhiye.com"
+            },
+            {
+              "snippet": "北森HRSaaS一体化人才管理云平台,为企业提供覆盖人才测评、招聘管理、绩效管理、组织人事、薪酬、假勤、继任、调查、Onboarding等业务全流程的一体化HR SaaS软件",
+              "source": "gg",
+              "title": "北森HRSaaS软件-人才测评、招聘、绩效、人力资源管理等 ...",
+              "url": "https://www.beisen.com"
+            },
+            {
+              "snippet": "MokaHRSaaS人力资源管理系统提供全面的招聘管理系统与人事管理系统，功能涵盖招聘管理、员工入离职管理、薪酬管理、绩效管理、假勤管理、组织人事管理等， ...",
+              "source": "gg",
+              "title": "Moka人力资源管理系统-企业一体化招聘管理系统和人事管理 ...",
+              "url": "https://www.mokahr.com"
+            },
+            {
+              "snippet": "Dec 1, 2025 — 北森HRSaaS一体化人才管理云平台,为企业提供覆盖人才测评、招聘管理、绩效管理、组织人事、薪酬、假勤、继任、调查、Onboarding",
+              "source": "gg",
+              "title": "招聘、绩效、人力资源管理等HRSaaS一体化人才管理云平台",
+              "url": "https://www.beisen.com/news"
+            }
+          ],
+          "usage": {
+            "boxes": [
+              "search"
+            ],
+            "remaining_before": {
+              "concurrent": 441,
+              "requests": 1469,
+              "search": 2929
+            },
+            "units": 1
+          }
+        },
+        "_treg": {
+          "served_by": "crawl4ai.web.search",
+          "provider": "crawl4ai",
+          "tier": "platform",
+          "outcome": "hit",
+          "tried": [
+            {
+              "endpoint_id": "crawl4ai.web.search",
+              "provider": "crawl4ai",
+              "outcome": "hit",
+              "status": 200,
+              "charged_micro": 150
+            }
+          ],
+          "charged_micro": 150,
+          "dropped": [
+            {
+              "endpoint_id": "tavily.web.search",
+              "why": "treg's account for this provider is exhausted right now"
+            }
+          ]
+        }
+      },
+      "cost_usd": 0.00015,
+      "served_via": null,
+      "whose_error": null,
+      "hint": null,
+      "did_you_mean": null,
+      "routed_tool": null,
+      "suggestion": null,
+      "upstream_failed": null,
+      "error": null,
+      "detail": null
+    },
+    {
+      "query": "上海 RAG Agent 招聘 产品经理 HR SaaS",
+      "elapsed_ms": 21973,
+      "call_id": "9c67b272123047c68a71c073d1b4514a",
+      "status": 200,
+      "retry_after": null,
+      "endpoint_id": "treg.web.search",
+      "replayed": null,
+      "body": {
+        "output": {
+          "results": [
+            {
+              "snippet": "Oct 12, 2026 — RAG、Prompt工程、Tools/Function Calling、多Agent协作等技术方案. SaaS/CRM逻辑设计背景。 SaaS行业产品经验,特别是商家运营或商户成长方向。",
+              "source": "gg",
+              "title": "AI产品经理(JR20260706010) - 滴滴招聘",
+              "url": "https://talent.didiglobal.com/social"
+            },
+            {
+              "snippet": "职位要求1、硕士学位及以上,计算机科学、人工智能、自然语言处理等相关领域; 生成(RAG)、Agent架构、搜索算法… 相关职位生成式推荐算法工程师(内容",
+              "source": "gg",
+              "title": "大语言模型AI搜索Agent算法工程师- Seed Model",
+              "url": "https://jobs.bytedance.com/experienced/m/position/detail/7473064938787244306?recomId=6acf1745-fbb8-11ef-a9f2-fa163ecff771&sourceJobId=7408105497964153126"
+            },
+            {
+              "snippet": "跟踪大模型、RAG、Agent、AI 编程工具等前沿技术，参与原型验证与内部工具沉淀。 【职位要求】. 本科及以上在读，计算机、软件工程、人工智能、数据科学等相关专业优先 ...Read more",
+              "source": "gg",
+              "title": "AI应用开发实习生",
+              "url": "https://dxctechnology.wd1.myworkdayjobs.com"
+            },
+            {
+              "snippet": "Oct 8, 2026 — 多点Dmall成都招聘产品经理（AI Agent 平台方向）(A122508)岗位，薪资25-55k·13薪,多点Dmall公司规模2000-5000人,岗位要求本科学历，5-10年相关经验， ...",
+              "source": "gg",
+              "title": "成都产品经理（AI Agent 平台方向）(A122508)招聘",
+              "url": "https://www.liepin.com/job"
+            },
+            {
+              "snippet": "1.本科及以上，2年以上互联网产品经验，AI工具类或内容/知识管理类产品背景优先； 2.有AI 产品落地经验：熟悉LLM、Agent、RAG、Prompt 工程或多模态内容理解，能独立 ...Read more",
+              "source": "gg",
+              "title": "腾讯招聘- 岗位详情",
+              "url": "https://careers.tencent.com/jobdesc.html?postId=2042527610751315968"
+            },
+            {
+              "snippet": "品牌报道汇集eRoad最新企业动态与品牌新闻，涵盖AI HR技术创新、HR SaaS智能体应用、智能招聘与薪酬管理实践、企业合作、行业活动及品牌荣誉等内容，分享人力资源科技 ...",
+              "source": "gg",
+              "title": "品牌报道_AI HR创新动态_企业合作与人力资源科技资讯",
+              "url": "https://www.ersoft.com"
+            },
+            {
+              "snippet": "团队致力于AI 搜索、RAG、Agent System 等方向的基础研究。 RAG 或AI Agent 开发的经验。能够解决复杂场景下的技术难题",
+              "source": "gg",
+              "title": "AI企业招聘信息汇总：多岗位多企业等你来选",
+              "url": "https://docs.feishu.cn/wiki"
+            },
+            {
+              "snippet": "Oct 15, 2026 — 招聘hr 职位描述岗位职责: 1. Ai策略设计: RAG、向量检索、提示工程、轻量微调、基础评测方法及行业应用场景",
+              "source": "gg",
+              "title": "「AI产品经理(A185128)招聘」_交个朋友招聘",
+              "url": "https://www.zhipin.com/job_detail"
+            },
+            {
+              "snippet": "\"\"\"Create a ReAct agent with RAG capability.\"\"\" try: api_key = os.getenv(\"DEEPSEEK_API_KEY\"). if api_key is None: raise ValueError(\"DEEPSEEK_API_KEY not found ...",
+              "source": "index",
+              "title": "阮英剑/doc-rag-agent",
+              "url": "https://gitee.com/ruan229243665/doc-rag-agent/blob/main/main.py"
+            }
+          ],
+          "count": 9
+        },
+        "raw": {
+          "cached": false,
+          "engines": [
+            {
+              "engine": "google",
+              "fetch_ms": 225,
+              "ms": 2050,
+              "n": 10,
+              "parse_ms": 7
+            }
+          ],
+          "ms": 2581,
+          "n": 9,
+          "results": [
+            {
+              "snippet": "Oct 12, 2026 — RAG、Prompt工程、Tools/Function Calling、多Agent协作等技术方案. SaaS/CRM逻辑设计背景。 SaaS行业产品经验,特别是商家运营或商户成长方向。",
+              "source": "gg",
+              "title": "AI产品经理(JR20260706010) - 滴滴招聘",
+              "url": "https://talent.didiglobal.com/social"
+            },
+            {
+              "snippet": "职位要求1、硕士学位及以上,计算机科学、人工智能、自然语言处理等相关领域; 生成(RAG)、Agent架构、搜索算法… 相关职位生成式推荐算法工程师(内容",
+              "source": "gg",
+              "title": "大语言模型AI搜索Agent算法工程师- Seed Model",
+              "url": "https://jobs.bytedance.com/experienced/m/position/detail/7473064938787244306?recomId=6acf1745-fbb8-11ef-a9f2-fa163ecff771&sourceJobId=7408105497964153126"
+            },
+            {
+              "snippet": "跟踪大模型、RAG、Agent、AI 编程工具等前沿技术，参与原型验证与内部工具沉淀。 【职位要求】. 本科及以上在读，计算机、软件工程、人工智能、数据科学等相关专业优先 ...Read more",
+              "source": "gg",
+              "title": "AI应用开发实习生",
+              "url": "https://dxctechnology.wd1.myworkdayjobs.com"
+            },
+            {
+              "snippet": "Oct 8, 2026 — 多点Dmall成都招聘产品经理（AI Agent 平台方向）(A122508)岗位，薪资25-55k·13薪,多点Dmall公司规模2000-5000人,岗位要求本科学历，5-10年相关经验， ...",
+              "source": "gg",
+              "title": "成都产品经理（AI Agent 平台方向）(A122508)招聘",
+              "url": "https://www.liepin.com/job"
+            },
+            {
+              "snippet": "1.本科及以上，2年以上互联网产品经验，AI工具类或内容/知识管理类产品背景优先； 2.有AI 产品落地经验：熟悉LLM、Agent、RAG、Prompt 工程或多模态内容理解，能独立 ...Read more",
+              "source": "gg",
+              "title": "腾讯招聘- 岗位详情",
+              "url": "https://careers.tencent.com/jobdesc.html?postId=2042527610751315968"
+            },
+            {
+              "snippet": "品牌报道汇集eRoad最新企业动态与品牌新闻，涵盖AI HR技术创新、HR SaaS智能体应用、智能招聘与薪酬管理实践、企业合作、行业活动及品牌荣誉等内容，分享人力资源科技 ...",
+              "source": "gg",
+              "title": "品牌报道_AI HR创新动态_企业合作与人力资源科技资讯",
+              "url": "https://www.ersoft.com"
+            },
+            {
+              "snippet": "团队致力于AI 搜索、RAG、Agent System 等方向的基础研究。 RAG 或AI Agent 开发的经验。能够解决复杂场景下的技术难题",
+              "source": "gg",
+              "title": "AI企业招聘信息汇总：多岗位多企业等你来选",
+              "url": "https://docs.feishu.cn/wiki"
+            },
+            {
+              "snippet": "Oct 15, 2026 — 招聘hr 职位描述岗位职责: 1. Ai策略设计: RAG、向量检索、提示工程、轻量微调、基础评测方法及行业应用场景",
+              "source": "gg",
+              "title": "「AI产品经理(A185128)招聘」_交个朋友招聘",
+              "url": "https://www.zhipin.com/job_detail"
+            },
+            {
+              "snippet": "\"\"\"Create a ReAct agent with RAG capability.\"\"\" try: api_key = os.getenv(\"DEEPSEEK_API_KEY\"). if api_key is None: raise ValueError(\"DEEPSEEK_API_KEY not found ...",
+              "source": "index",
+              "title": "阮英剑/doc-rag-agent",
+              "url": "https://gitee.com/ruan229243665/doc-rag-agent/blob/main/main.py"
+            }
+          ],
+          "usage": {
+            "boxes": [
+              "search"
+            ],
+            "remaining_before": {
+              "concurrent": 436,
+              "requests": 1177,
+              "search": 2920
+            },
+            "units": 1
+          }
+        },
+        "_treg": {
+          "served_by": "crawl4ai.web.search",
+          "provider": "crawl4ai",
+          "tier": "platform",
+          "outcome": "hit",
+          "tried": [
+            {
+              "endpoint_id": "crawl4ai.web.search",
+              "provider": "crawl4ai",
+              "outcome": "hit",
+              "status": 200,
+              "charged_micro": 150
+            }
+          ],
+          "charged_micro": 150,
+          "dropped": [
+            {
+              "endpoint_id": "tavily.web.search",
+              "why": "treg's account for this provider is exhausted right now"
+            }
+          ]
+        }
+      },
+      "cost_usd": 0.00015,
+      "served_via": null,
+      "whose_error": null,
+      "hint": null,
+      "did_you_mean": null,
+      "routed_tool": null,
+      "suggestion": null,
+      "upstream_failed": null,
+      "error": null,
+      "detail": null
+    },
+    {
+      "query": "中国 中性原子 量子计算 企业 官网",
+      "elapsed_ms": 26465,
+      "call_id": "a747377d290745b08130286f71684cbe",
+      "status": 200,
+      "retry_after": null,
+      "endpoint_id": "treg.web.search",
+      "replayed": null,
+      "body": {
+        "output": {
+          "results": [
+            {
+              "snippet": "科大国盾量子技术股份有限公司成立于2009年，技术源自中国科学技术大学。公司主要从事量子通信、量子计算、量子精密测量产品的研发、生产、销售并提供相关技术服务，是中国 ...Read more",
+              "source": "gg",
+              "title": "国盾量子– 量子科技产业报国",
+              "url": "https://www.quantum-info.com"
+            },
+            {
+              "snippet": "中科酷原科技（武汉）有限公司（下称“中科酷原”）2020年成立，总部位于湖北武汉，致力于原子量子算力、测量、测控的产品与解决方案研发，提供量子算力、量子教育、量子 ...Read more",
+              "source": "gg",
+              "title": "关于酷原",
+              "url": "https://www.cascoldatom.com/about"
+            },
+            {
+              "snippet": "Mar 11, 2025 — 中性原子量子计算机正迅速追赶行业领先者，如IBM、IonQ和Google等。QuEra、Atom Computing、Infleqtion和Pasqal等公司，已成功构建了拥有数百个量子比特的 ...Read more",
+              "source": "gg",
+              "title": "量子计算新突破：中性原子量子计算机崛起",
+              "url": "https://www.baqis.ac.cn/detail"
+            },
+            {
+              "snippet": "本源量子是中国第一家量子计算公司，是拥有量子计算专利最多的中国公司。有兴趣的读者可以通过国际开源网站GitHub与Gitee、本源量子官网https://learn.originqc.com.cn ...Read more",
+              "source": "gg",
+              "title": "本源量子",
+              "url": "https://originqc.com.cn"
+            },
+            {
+              "snippet": "清华大学量子信息中心致力于量子计算与量子网络的实验实现以及量子算法、纠缠理论和量子密码学的研究。实验方面，中心开展基于离子阱、金刚石缺陷自旋和超导量子比特的量子 ...Read more",
+              "source": "gg",
+              "title": "清华大学量子信息中心",
+              "url": "https://cqi.tsinghua.edu.cn"
+            },
+            {
+              "snippet": "企业 · 企业动态 · 国际 · 国内 · 量子信息 · 量子计算 · 量子通信 · 量子传感 · 量子安全 · PQC · QKD · ArXiv更新 · 按主题 · 定制资讯 ...Read more",
+              "source": "gg",
+              "title": "CNQT 量智| 量智信息中心_量科网",
+              "url": "http://www.qtc.com.cn"
+            },
+            {
+              "snippet": "量旋科技是一家致力于量子计算产业化和普惠化的一站式解决方案服务商,目前公司有三大主营业务・ 中国企业全球化新・ 量子计算领域唯一上榜企业2026.09.28",
+              "source": "gg",
+              "title": "量子计算-量子计算机公司|厂家-SpinQ量旋科技",
+              "url": "https://www.spinq.com"
+            },
+            {
+              "snippet": "图灵量子(TuringQ)官方网站。全球领先的光量子计算与量子人工智能解决方案提供商,专注光量子芯片、量子计算系统与量子AI研发应用,致力于成为全球芯、光、智",
+              "source": "gg",
+              "title": "图灵量子TuringQ | 用光子芯片和量子计算驱动算力变革",
+              "url": "https://www.turingq.com"
+            }
+          ],
+          "count": 8
+        },
+        "raw": {
+          "cached": false,
+          "engines": [
+            {
+              "engine": "google",
+              "fetch_ms": 395,
+              "ms": 2151,
+              "n": 10,
+              "parse_ms": 2
+            }
+          ],
+          "ms": 2743,
+          "n": 8,
+          "results": [
+            {
+              "snippet": "科大国盾量子技术股份有限公司成立于2009年，技术源自中国科学技术大学。公司主要从事量子通信、量子计算、量子精密测量产品的研发、生产、销售并提供相关技术服务，是中国 ...Read more",
+              "source": "gg",
+              "title": "国盾量子– 量子科技产业报国",
+              "url": "https://www.quantum-info.com"
+            },
+            {
+              "snippet": "中科酷原科技（武汉）有限公司（下称“中科酷原”）2020年成立，总部位于湖北武汉，致力于原子量子算力、测量、测控的产品与解决方案研发，提供量子算力、量子教育、量子 ...Read more",
+              "source": "gg",
+              "title": "关于酷原",
+              "url": "https://www.cascoldatom.com/about"
+            },
+            {
+              "snippet": "Mar 11, 2025 — 中性原子量子计算机正迅速追赶行业领先者，如IBM、IonQ和Google等。QuEra、Atom Computing、Infleqtion和Pasqal等公司，已成功构建了拥有数百个量子比特的 ...Read more",
+              "source": "gg",
+              "title": "量子计算新突破：中性原子量子计算机崛起",
+              "url": "https://www.baqis.ac.cn/detail"
+            },
+            {
+              "snippet": "本源量子是中国第一家量子计算公司，是拥有量子计算专利最多的中国公司。有兴趣的读者可以通过国际开源网站GitHub与Gitee、本源量子官网https://learn.originqc.com.cn ...Read more",
+              "source": "gg",
+              "title": "本源量子",
+              "url": "https://originqc.com.cn"
+            },
+            {
+              "snippet": "清华大学量子信息中心致力于量子计算与量子网络的实验实现以及量子算法、纠缠理论和量子密码学的研究。实验方面，中心开展基于离子阱、金刚石缺陷自旋和超导量子比特的量子 ...Read more",
+              "source": "gg",
+              "title": "清华大学量子信息中心",
+              "url": "https://cqi.tsinghua.edu.cn"
+            },
+            {
+              "snippet": "企业 · 企业动态 · 国际 · 国内 · 量子信息 · 量子计算 · 量子通信 · 量子传感 · 量子安全 · PQC · QKD · ArXiv更新 · 按主题 · 定制资讯 ...Read more",
+              "source": "gg",
+              "title": "CNQT 量智| 量智信息中心_量科网",
+              "url": "http://www.qtc.com.cn"
+            },
+            {
+              "snippet": "量旋科技是一家致力于量子计算产业化和普惠化的一站式解决方案服务商,目前公司有三大主营业务・ 中国企业全球化新・ 量子计算领域唯一上榜企业2026.09.28",
+              "source": "gg",
+              "title": "量子计算-量子计算机公司|厂家-SpinQ量旋科技",
+              "url": "https://www.spinq.com"
+            },
+            {
+              "snippet": "图灵量子(TuringQ)官方网站。全球领先的光量子计算与量子人工智能解决方案提供商,专注光量子芯片、量子计算系统与量子AI研发应用,致力于成为全球芯、光、智",
+              "source": "gg",
+              "title": "图灵量子TuringQ | 用光子芯片和量子计算驱动算力变革",
+              "url": "https://www.turingq.com"
+            }
+          ],
+          "usage": {
+            "boxes": [
+              "search"
+            ],
+            "remaining_before": {
+              "concurrent": 425,
+              "requests": 887,
+              "search": 2912
+            },
+            "units": 1
+          }
+        },
+        "_treg": {
+          "served_by": "crawl4ai.web.search",
+          "provider": "crawl4ai",
+          "tier": "platform",
+          "outcome": "hit",
+          "tried": [
+            {
+              "endpoint_id": "crawl4ai.web.search",
+              "provider": "crawl4ai",
+              "outcome": "hit",
+              "status": 200,
+              "charged_micro": 150
+            }
+          ],
+          "charged_micro": 150,
+          "dropped": [
+            {
+              "endpoint_id": "tavily.web.search",
+              "why": "treg's account for this provider is exhausted right now"
+            }
+          ]
+        }
+      },
+      "cost_usd": 0.00015,
+      "served_via": null,
+      "whose_error": null,
+      "hint": null,
+      "did_you_mean": null,
+      "routed_tool": null,
+      "suggestion": null,
+      "upstream_failed": null,
+      "error": null,
+      "detail": null
+    }
+  ],
+  "extracts": [
+    {
+      "call_id": "12cccdfd77fa4efaaf1cd9e57485adbc",
+      "cost_usd": 0.00015,
+      "status": 200,
+      "source_url": "https://www.mokahr.com",
+      "provider": "crawl4ai.web.scrape",
+      "excerpt": "覆盖社招、校招、内推、猎头管理等场景",
+      "assessment": "页面正文提取成功，存在大量导航、重复内容及隐私政策。"
+    },
+    {
+      "call_id": "0e619b07e4bc4f8884f4514bc438fff8",
+      "cost_usd": null,
+      "status": 404,
+      "elapsed_ms": 6282,
+      "source_url": "https://www.cascoldatom.com/about",
+      "error": "route_not_found",
+      "charged_micro": 0
+    }
+  ],
+  "people_summary": {
+    "call_id": "1926f873037e418f9a4771950748be1b",
+    "cost_usd": 0.002,
+    "status": 200,
+    "total_claimed": 215,
+    "returned": 10,
+    "with_profile_url": 10,
+    "positions": [
+      "AI Product Department R&D Manager",
+      "Senior AI Product Manager at Amazon",
+      "AI Product Manager | Conversational AI & AI Sales Agents | Agent Workflows · Context Engineering · LLM Evals",
+      "AI Product Manager & Engineer",
+      "AI Product Manager at RoboTruck | Autonomous Systems | Product Strategy | From Emerging Technology to Real-World Deployment",
+      "Procurement & Supply Chain Data & AI Product Manager",
+      "Senior AI Product/Program Manager",
+      "Product Manager | AI",
+      "AI Product Manager",
+      "Technical Product Manager / Data & AI Platform at Ford Motor Company"
+    ],
+    "note": "移除姓名、头像和个人主页；本样本未验证 HR 行业经历、任职现状及求职意愿。"
+  }
+}

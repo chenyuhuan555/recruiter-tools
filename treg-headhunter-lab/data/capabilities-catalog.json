@@ -1,0 +1,564 @@
+{
+  "checked_at": "2026-10-28",
+  "validation": "catalog_only_not_live_tested",
+  "endpoints": [
+    {
+      "endpoint_id": "treg.companies.news",
+      "summary": "Recent news about a company by domain — provider-native article/event rows in `articles`",
+      "input": {
+        "bodyType": "json",
+        "body": {
+          "domain": {
+            "type": "str",
+            "required": false,
+            "note": "identity key (part of domain)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "note": "filter — default 10"
+          }
+        },
+        "note": "Send everything you know about the subject — treg derives the rest (full_name ⇄ first+last), matches each provider on the variants it accepts ({domain}) and sends each provider only the fields it wants. On a miss treg keeps trying providers, cheapest first, within X-Treg-Route-Max-Cost (default $1 per call; misses on per-success providers are free). Options ride as headers, never in the body: X-Treg-Route-Waterfall: 0 (stop at the first miss), X-Treg-Route-Max-Cost: <usd>, X-Treg-Route-Prefer / X-Treg-Route-Exclude: <provider>. The response is {output, raw, _treg: {served_by, tried}}; X-Treg-Served-By names the child."
+      },
+      "cost": {
+        "type": "per_success",
+        "value": 0.01,
+        "currency": "USD",
+        "per": 1,
+        "unit": "call",
+        "source": "inferred",
+        "confidence": "documented",
+        "checked": null,
+        "varies": true,
+        "note": "NOT free: misses are billed too. the children's range $0.01–$0.04 per hit, 0% markup; you pay the child that served AND every child tried before it that bills a miss (2 of 2 do), up to X-Treg-Route-Max-Cost (default $1 a call). X-Treg-Route-Exclude them, or X-Treg-Route-Waterfall: 0, to pay for one provider only",
+        "usd": 0.01
+      },
+      "scope": "",
+      "platform_eligible": true,
+      "docs_url": "",
+      "observed": null,
+      "reviews": null
+    },
+    {
+      "endpoint_id": "treg.people.search",
+      "summary": "Find people by a free-text description, or by company domain / title / country — provider-native rows in `people`",
+      "input": {
+        "bodyType": "json",
+        "body": {
+          "q": {
+            "type": "str",
+            "required": false,
+            "note": "identity key (part of q)"
+          },
+          "company_domain": {
+            "type": "str",
+            "required": false,
+            "note": "identity key (part of company_domain, company_domain+title)"
+          },
+          "title": {
+            "type": "str",
+            "required": false,
+            "note": "identity key (part of company_domain+title, title)"
+          },
+          "full_name": {
+            "type": "str",
+            "required": false,
+            "note": "identity key (part of full_name)"
+          },
+          "country": {
+            "type": "str",
+            "required": false,
+            "note": "filter — default None; ISO country code, where the provider supports it"
+          },
+          "location": {
+            "type": "str",
+            "required": false,
+            "note": "filter — default None; free-text place ('London, United Kingdom', 'Greater Phoenix') passed through to providers that take one; finer than country, never normalised"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "note": "filter — default 10; rows to return — THE price dial: most providers bill per row"
+          },
+          "keywords": {
+            "type": "list",
+            "required": false,
+            "note": "filter — default None; skills, topics or domain terms the person must match ('microservices', 'match analysis') — the SUBSTANCE of most briefs; a provider with no keyword field answers a looser question and ranks below one that has it"
+          }
+        },
+        "note": "Send everything you know about the subject — treg derives the rest (full_name ⇄ first+last), matches each provider on the variants it accepts ({q} | {company_domain} | {company_domain, title} | {title} | {full_name}) and sends each provider only the fields it wants. On a miss treg keeps trying providers, cheapest first, within X-Treg-Route-Max-Cost (default $1 per call; misses on per-success providers are free). Options ride as headers, never in the body: X-Treg-Route-Waterfall: 0 (stop at the first miss), X-Treg-Route-Max-Cost: <usd>, X-Treg-Route-Prefer / X-Treg-Route-Exclude: <provider>. The response is {output, raw, _treg: {served_by, tried}}; X-Treg-Served-By names the child."
+      },
+      "cost": {
+        "type": "per_success",
+        "value": 0,
+        "currency": "USD",
+        "per": 1,
+        "unit": "call",
+        "source": "inferred",
+        "confidence": "documented",
+        "checked": null,
+        "varies": true,
+        "note": "NOT free: misses are billed too. the children's range $0–$0.3 per hit, 0% markup; you pay the child that served AND every child tried before it that bills a miss (17 of 26 do), up to X-Treg-Route-Max-Cost (default $1 a call). X-Treg-Route-Exclude them, or X-Treg-Route-Waterfall: 0, to pay for one provider only",
+        "usd": 0
+      },
+      "scope": "",
+      "platform_eligible": true,
+      "docs_url": "",
+      "observed": {
+        "samples": 2453200,
+        "decided": 2453189,
+        "ok_rate": 0.9172,
+        "p50_ms": null,
+        "p95_ms": null,
+        "last_ok_days": 0,
+        "hit_rate": null,
+        "hit_samples": 0
+      },
+      "reviews": null
+    },
+    {
+      "endpoint_id": "treg.people.enrich",
+      "summary": "Enrich a person from an email, a LinkedIn URL or a name + company domain — treg picks the provider and names the one that served",
+      "input": {
+        "bodyType": "json",
+        "body": {
+          "email": {
+            "type": "str",
+            "required": false,
+            "note": "identity key (part of email)"
+          },
+          "linkedin_url": {
+            "type": "url",
+            "required": false,
+            "note": "identity key (part of linkedin_url)"
+          },
+          "linkedin_handle": {
+            "type": "str",
+            "required": false,
+            "note": "identity key (part of linkedin_handle)"
+          },
+          "domain": {
+            "type": "str",
+            "required": false,
+            "note": "identity key (part of domain+full_name, domain+first_name+last_name)"
+          },
+          "full_name": {
+            "type": "str",
+            "required": false,
+            "note": "identity key (part of domain+full_name)"
+          },
+          "first_name": {
+            "type": "str",
+            "required": false,
+            "note": "identity key (part of domain+first_name+last_name)"
+          },
+          "last_name": {
+            "type": "str",
+            "required": false,
+            "note": "identity key (part of domain+first_name+last_name)"
+          }
+        },
+        "note": "Send everything you know about the subject — treg derives the rest (full_name ⇄ first+last), matches each provider on the variants it accepts ({email} | {linkedin_url} | {linkedin_handle} | {domain, full_name} | {domain, first_name, last_name}) and sends each provider only the fields it wants. On a miss treg keeps trying providers, cheapest first, within X-Treg-Route-Max-Cost (default $1 per call; misses on per-success providers are free). Options ride as headers, never in the body: X-Treg-Route-Waterfall: 0 (stop at the first miss), X-Treg-Route-Max-Cost: <usd>, X-Treg-Route-Prefer / X-Treg-Route-Exclude: <provider>. The response is {output, raw, _treg: {served_by, tried}}; X-Treg-Served-By names the child."
+      },
+      "cost": {
+        "type": "per_success",
+        "value": 0.000495,
+        "currency": "USD",
+        "per": 1,
+        "unit": "call",
+        "source": "inferred",
+        "confidence": "documented",
+        "checked": null,
+        "varies": true,
+        "note": "NOT free: misses are billed too. the children's range $0.000495–$0.28 per hit, 0% markup; you pay the child that served AND every child tried before it that bills a miss (2 of 27 do), up to X-Treg-Route-Max-Cost (default $1 a call). X-Treg-Route-Exclude them, or X-Treg-Route-Waterfall: 0, to pay for one provider only",
+        "usd": 0.000495
+      },
+      "scope": "",
+      "platform_eligible": true,
+      "docs_url": "",
+      "observed": {
+        "samples": 446077,
+        "decided": 443944,
+        "ok_rate": 0.7631,
+        "p50_ms": null,
+        "p95_ms": null,
+        "last_ok_days": 0,
+        "hit_rate": null,
+        "hit_samples": 0
+      },
+      "reviews": null
+    },
+    {
+      "endpoint_id": "treg.people.email.verify",
+      "summary": "Verify an email address — treg picks the provider (own keys first, then cheapest) and names the one that served",
+      "input": {
+        "bodyType": "json",
+        "body": {
+          "email": {
+            "type": "str",
+            "required": false,
+            "note": "identity key (part of email)"
+          }
+        },
+        "note": "Send everything you know about the subject — treg derives the rest (full_name ⇄ first+last), matches each provider on the variants it accepts ({email}) and sends each provider only the fields it wants. On a miss treg keeps trying providers, cheapest first, within X-Treg-Route-Max-Cost (default $1 per call; misses on per-success providers are free). Options ride as headers, never in the body: X-Treg-Route-Waterfall: 0 (stop at the first miss), X-Treg-Route-Max-Cost: <usd>, X-Treg-Route-Prefer / X-Treg-Route-Exclude: <provider>. The response is {output, raw, _treg: {served_by, tried}}; X-Treg-Served-By names the child."
+      },
+      "cost": {
+        "type": "per_success",
+        "value": 0,
+        "currency": "USD",
+        "per": 1,
+        "unit": "call",
+        "source": "inferred",
+        "confidence": "documented",
+        "checked": null,
+        "varies": true,
+        "note": "NOT free: misses are billed too. the children's range $0–$0.024 per hit, 0% markup; you pay the child that served AND every child tried before it that bills a miss (5 of 13 do), up to X-Treg-Route-Max-Cost (default $1 a call). X-Treg-Route-Exclude them, or X-Treg-Route-Waterfall: 0, to pay for one provider only",
+        "usd": 0
+      },
+      "scope": "",
+      "platform_eligible": true,
+      "docs_url": "",
+      "observed": {
+        "samples": 3021363,
+        "decided": 3021287,
+        "ok_rate": 0.9668,
+        "p50_ms": null,
+        "p95_ms": null,
+        "last_ok_days": 0,
+        "hit_rate": null,
+        "hit_samples": 0
+      },
+      "reviews": null
+    },
+    {
+      "endpoint_id": "scrapecreators.x.v1-github-user-repositories",
+      "summary": "Retrieves a user's public repositories with repo metadata like description, language, stars, forks, topics, license, visibility, default branch, and timestamps.",
+      "input": {
+        "queryParams": {
+          "handle": {
+            "type": "string",
+            "required": false,
+            "note": "GitHub username/handle of the user you want the repositories for",
+            "example": "torvalds"
+          },
+          "url": {
+            "type": "string",
+            "required": false,
+            "note": "GitHub user URL, e.g. https://github.com/kentcdodds.",
+            "example": "https://github.com/kentcdodds"
+          },
+          "type": {
+            "type": "string",
+            "required": false,
+            "note": "Repository type. Defaults to owner. GitHub also supports all and member.",
+            "example": "owner"
+          },
+          "sort": {
+            "type": "string",
+            "required": false,
+            "note": "Sort by created, updated, pushed, or full_name. Defaults to updated.",
+            "example": "updated"
+          },
+          "direction": {
+            "type": "string",
+            "required": false,
+            "note": "Sort direction: ascending or descending.",
+            "example": "desc"
+          },
+          "cursor": {
+            "type": "number",
+            "required": false,
+            "note": "Cursor from the previous response. Defaults to 1.",
+            "example": 1
+          }
+        }
+      },
+      "cost": {
+        "type": "per_call",
+        "value": 1,
+        "currency": "credit",
+        "per": 1,
+        "unit": "call",
+        "source": "rate_card_api",
+        "source_url": "https://docs.scrapecreators.com/openapi.json",
+        "checked": "2026-07-28",
+        "confidence": "verified",
+        "usd": 0.00188
+      },
+      "scope": "",
+      "platform_eligible": true,
+      "docs_url": "https://docs.scrapecreators.com/github/user/repositories",
+      "observed": null,
+      "reviews": {
+        "teams": 0,
+        "samples": [
+          {
+            "usefulness": "useful",
+            "reason": "Returned all public repos with stars, forks, topics and push dates in one cheap call; enough to judge recent real work vs forks.",
+            "client": "mcp",
+            "month": "2026-10"
+          }
+        ]
+      }
+    },
+    {
+      "endpoint_id": "findymail.signals",
+      "summary": "Signals your monitors have detected — job posts, hiring and other intent events, with the company and contact attached",
+      "input": {
+        "queryParams": {
+          "signal_type": {
+            "type": "string",
+            "required": false,
+            "note": "restrict to one signal type"
+          },
+          "monitor_id": {
+            "type": "integer",
+            "required": false,
+            "note": "restrict to one monitor"
+          },
+          "date_from": {
+            "type": "string",
+            "required": false,
+            "note": "ISO date lower bound"
+          },
+          "date_to": {
+            "type": "string",
+            "required": false,
+            "note": "ISO date upper bound"
+          },
+          "relevance_scores": {
+            "type": "string",
+            "required": false,
+            "note": "comma-separated relevance scores to keep"
+          },
+          "page": {
+            "type": "integer",
+            "required": false,
+            "example": 1
+          },
+          "per_page": {
+            "type": "integer",
+            "required": false,
+            "note": "max 100",
+            "example": 2
+          }
+        },
+        "note": "only returns rows for monitors YOU created (POST /signals/monitors, free, not listed here); an account with no monitors gets an empty data array, which is what the live test saw"
+      },
+      "cost": {
+        "type": "free",
+        "value": 0,
+        "currency": "USD",
+        "unit": "call",
+        "usd": 0
+      },
+      "scope": "own_account",
+      "platform_eligible": false,
+      "docs_url": "https://app.findymail.com/docs/",
+      "observed": {
+        "samples": 4,
+        "decided": 4,
+        "ok_rate": null,
+        "p50_ms": null,
+        "p95_ms": null,
+        "last_ok_days": null,
+        "hit_rate": null,
+        "hit_samples": 0
+      },
+      "reviews": null
+    },
+    {
+      "endpoint_id": "treg.companies.jobs.search",
+      "summary": "Open job listings at a company, by name or domain — provider-native job rows in `jobs`",
+      "input": {
+        "bodyType": "json",
+        "body": {
+          "name": {
+            "type": "str",
+            "required": false,
+            "note": "identity key (part of name)"
+          },
+          "domain": {
+            "type": "str",
+            "required": false,
+            "note": "identity key (part of domain)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "note": "filter — default 10; rows to return — most providers bill per row"
+          }
+        },
+        "note": "Send everything you know about the subject — treg derives the rest (full_name ⇄ first+last), matches each provider on the variants it accepts ({name} | {domain}) and sends each provider only the fields it wants. On a miss treg keeps trying providers, cheapest first, within X-Treg-Route-Max-Cost (default $1 per call; misses on per-success providers are free). Options ride as headers, never in the body: X-Treg-Route-Waterfall: 0 (stop at the first miss), X-Treg-Route-Max-Cost: <usd>, X-Treg-Route-Prefer / X-Treg-Route-Exclude: <provider>. The response is {output, raw, _treg: {served_by, tried}}; X-Treg-Served-By names the child."
+      },
+      "cost": {
+        "type": "per_success",
+        "value": 0.009,
+        "currency": "USD",
+        "per": 1,
+        "unit": "call",
+        "source": "inferred",
+        "confidence": "documented",
+        "checked": null,
+        "varies": true,
+        "note": "NOT free: misses are billed too. the children's range $0.009–$0.04 per hit, 0% markup; you pay the child that served AND every child tried before it that bills a miss (4 of 4 do), up to X-Treg-Route-Max-Cost (default $1 a call). X-Treg-Route-Exclude them, or X-Treg-Route-Waterfall: 0, to pay for one provider only",
+        "usd": 0.009
+      },
+      "scope": "",
+      "platform_eligible": true,
+      "docs_url": "",
+      "observed": {
+        "samples": 11791,
+        "decided": 11652,
+        "ok_rate": 0.9755,
+        "p50_ms": null,
+        "p95_ms": null,
+        "last_ok_days": 0,
+        "hit_rate": null,
+        "hit_samples": 0
+      },
+      "reviews": {
+        "teams": 0,
+        "samples": [
+          {
+            "usefulness": "not_useful",
+            "reason": "Exact-name match only; returned 3 arbitrary job titles out of 142 with no dates or role filter.",
+            "client": "claude-code",
+            "month": "2026-10"
+          }
+        ]
+      }
+    },
+    {
+      "endpoint_id": "valyu.research.papers.search",
+      "summary": "Search arXiv, PubMed and subscribed preprint sources.",
+      "input": {
+        "bodyType": "json",
+        "body": {
+          "query": {
+            "type": "string",
+            "required": true,
+            "example": "quantum error correction research"
+          },
+          "max_num_results": {
+            "type": "integer",
+            "required": true,
+            "min": 1,
+            "max": 10,
+            "example": 1
+          },
+          "search_type": {
+            "type": "string",
+            "required": true,
+            "enum": [
+              "proprietary"
+            ]
+          },
+          "max_price": {
+            "type": "number",
+            "required": true,
+            "enum": [
+              5
+            ]
+          },
+          "response_length": {
+            "type": "string",
+            "required": true,
+            "enum": [
+              "short"
+            ]
+          },
+          "included_sources": {
+            "type": "array[string]",
+            "required": true,
+            "minItems": 1,
+            "maxItems": 5,
+            "enum": [
+              "valyu/valyu-arxiv",
+              "valyu/valyu-pubmed",
+              "valyu/valyu-medrxiv",
+              "valyu/valyu-biorxiv",
+              "valyu/valyu-chemrxiv"
+            ],
+            "example": [
+              "valyu/valyu-arxiv",
+              "valyu/valyu-pubmed",
+              "valyu/valyu-medrxiv",
+              "valyu/valyu-biorxiv",
+              "valyu/valyu-chemrxiv"
+            ]
+          }
+        },
+        "note": "The selected Valyu sources are fixed for shared-key calls; use a Valyu own tool for arbitrary source mixes."
+      },
+      "cost": {
+        "type": "per_call",
+        "currency": "credit",
+        "unit": "call",
+        "table": [
+          {
+            "when": {
+              "body.search_type": "proprietary"
+            },
+            "value": 0.005,
+            "times": "body.max_num_results"
+          }
+        ],
+        "fallback": {
+          "value": 0.05,
+          "note": "Ten requested results at the highest source rate for this view."
+        },
+        "settle": "usage",
+        "usage": {
+          "path": "total_deduction_dollars",
+          "unit": "credit"
+        },
+        "source": "observed",
+        "source_url": "https://api.valyu.ai/v1/datasources",
+        "checked": "2026-09-30",
+        "confidence": "verified",
+        "note": "ChemRxiv is the highest-priced source in this view at five credits per 1,000 results.",
+        "table_min": 0.005,
+        "usd": 0.05,
+        "usd_min": 0.005
+      },
+      "scope": "any_account",
+      "platform_eligible": true,
+      "docs_url": "https://docs.valyu.ai/api-reference/endpoint/search",
+      "observed": {
+        "samples": 377,
+        "decided": 374,
+        "ok_rate": 1,
+        "p50_ms": 2433,
+        "p95_ms": 6177,
+        "last_ok_days": 1,
+        "hit_rate": null,
+        "hit_samples": 0
+      },
+      "reviews": {
+        "teams": 0,
+        "samples": [
+          {
+            "usefulness": "useful",
+            "reason": "On-topic PMC hits with result paragraphs containing hazard ratios; a review's reference list surfaced further relevant cohort comparisons. Responses are long.",
+            "client": "mcp",
+            "month": "2026-10"
+          },
+          {
+            "usefulness": "useful",
+            "reason": "Found a null-coverage advertising study and a randomized service-uptake trial with an economic companion. Research-recruitment hits were excluded.",
+            "client": "mcp",
+            "month": "2026-10"
+          },
+          {
+            "usefulness": "partly",
+            "reason": "Attention-cueing-in-animation query returned mostly off-topic vision-science preprints; one PubMed hit was relevant. Education-psychology papers are thin in the arxiv/pubmed sources.",
+            "client": "mcp",
+            "month": "2026-10"
+          }
+        ]
+      }
+    }
+  ]
+}

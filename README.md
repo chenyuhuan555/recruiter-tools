@@ -2,6 +2,14 @@
 
 将「岗位需求 → AI搜索指令 → 倍罗搜索」这个链路产品化的工具包。
 
+## 本周研究：treg × 猎头场景验证
+
+新增 [研究项目与本地原型](treg-headhunter-lab/README.md)：7类业务场景、6次真实接口调用、成本记录、失败案例和可回放网页。
+
+- [场景与产品机会](treg-headhunter-lab/docs/capabilities.md)
+- [研究结论与成本](treg-headhunter-lab/docs/research.md)
+- [实验复盘](treg-headhunter-lab/docs/retrospective.md)
+
 ---
 
 ## 📦 包含什么
