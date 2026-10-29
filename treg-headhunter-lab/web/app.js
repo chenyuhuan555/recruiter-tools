@@ -15,10 +15,11 @@ function show(record) {
       const link=node('a',row.title || url.hostname); link.href=url.href; link.target='_blank'; link.rel='noopener noreferrer'; card.append(link);
     } catch { continue; }
     card.append(node('p',row.snippet || row.description || '未返回摘要'));
-    card.append(node('small','搜索摘要 · 待打开原页核实')); article.append(card);
+    card.append(node('small','搜索摘要 · 不等于原文核实')); SourceReview.attach(card,row,record); article.append(card);
   }
   if(!rows.length) article.append(node('p','本次没有可展示的搜索结果，请核查状态和数据结构。'));
   el('results').append(article);
+  SourceReview.refresh();
 }
 function plan(event) {
   event?.preventDefault();
@@ -28,12 +29,14 @@ function plan(event) {
   const groups=[['同业务公司',`${sector} 公司 官网`, '验证产品是否服务相同业务，目标公司员工是否具备相关经验仍待核实。'],
     ['相邻岗位',`${city} ${role} ${skills.slice(0,2).join(' ')} 招聘`, '比较岗位职责；职称和关键词相似不代表经验相同。'],
     ['公开职业线索',`site:linkedin.com/in/ ${city} ${role} ${sector}`, '只用于发现可核实的公开职业主页，行业经历和当前任职待确认。']];
-  for(const [title,query,note] of groups){const section=node('article','');section.append(node('strong',title+' · 寻访假设'),node('p',note),node('pre',query));const button=node('button',live?'实时查公开来源':'在线研究版未接入实时查询');button.disabled=!live;button.onclick=async()=>{button.disabled=true;status('正在检索，可能需要约一分钟…');try{const r=await fetch('/search',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query})});const d=await r.json();if(!r.ok)throw Error(d.error);records.push(d);show(d);status('本次结果已保留，可导出核查。');}catch(e){status(e.message);}finally{button.disabled=!live;}};section.append(button);el('directions').append(section);}
+  for(const [title,query,note] of groups){const section=node('article','');section.append(node('strong',title+' · 寻访假设'),node('p',note),node('pre',query));const button=node('button',live?'实时查公开来源':'在线研究版未接入实时查询');button.disabled=!live;button.onclick=async()=>{button.disabled=true;status('正在检索，可能需要约一分钟…');try{const r=await fetch('/search',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query})});const d=await r.json();if(!r.ok)throw Error(d.error);records.push(d);show(d);SourceReview.remember(records);status('本次结果已保留，可导出核查。');}catch(e){status(e.message);}finally{button.disabled=!live;}};section.append(button);el('directions').append(section);}
   status('已生成3个寻访方向。它们是待验证的假设。');
 }
 el('form').onsubmit=plan;
-el('replay').onclick=async()=>{try{const r=await fetch('./data.json');if(!r.ok)throw Error('读取失败');const d=await r.json();el('results').replaceChildren();records=d.searches;records.forEach(show);status('显示2026-10-28实测：HR SaaS行业、AI岗位和中性原子行业，共3条查询。与当前输入独立。');}catch(e){status(e.message);}};
-el('export').onclick=()=>{const blob=new Blob([JSON.stringify({exported_at:new Date().toISOString(),inputs:Object.fromEntries(['role','sector','city','skills'].map(k=>[k,el(k).value])),records},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=node('a','');a.href=url;a.download='sourcing-research.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+el('replay').onclick=async()=>{try{const r=await fetch('./data.json');if(!r.ok)throw Error('读取失败');const d=await r.json();el('results').replaceChildren();records=d.searches;records.forEach(show);SourceReview.remember(records);status('显示2026-10-28实测：HR SaaS行业、AI岗位和中性原子行业，共3条查询。与当前输入独立；我的核实按原始查询与链接保存。');}catch(e){status(e.message);}};
+el('export').onclick=()=>{const blob=new Blob([JSON.stringify({exported_at:new Date().toISOString(),inputs:Object.fromEntries(['role','sector','city','skills'].map(k=>[k,el(k).value])),records,reviews:SourceReview.exportReviews()},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=node('a','');a.href=url;a.download='sourcing-research.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+records=SourceReview.restoredRecords();
+if(records.length){el('results').replaceChildren();records.forEach(show);}
 fetch('./config.json').then(r=>r.json()).then(d=>{live=d.live;plan();}).catch(()=>status('本地服务未连接，请运行 python server.py。'));
 
 const scenes = [
@@ -99,3 +102,14 @@ document.querySelectorAll('[data-scene-filter]').forEach(button=>button.onclick=
   renderScenes(button.dataset.sceneFilter);
 });
 renderScenes();
+
+fetch('./review-study.json').then(response=>{if(!response.ok)throw Error('核查示例读取失败');return response.json();}).then(study=>{
+  const area=el('review-study');area.replaceChildren(node('p',study.job),node('p',study.method));
+  for(const item of study.cases){
+    const card=node('article','');const link=node('a',item.company);link.href=item.url;link.target='_blank';link.rel='noopener noreferrer';
+    card.append(link,node('p',`${item.state} · ${item.group} · ${item.access}`));
+    if(item.quote)card.append(node('blockquote',item.quote));card.append(node('p',item.reason));area.append(card);
+  }
+  area.append(node('p',study.note));
+}).catch(error=>el('review-study').textContent=error.message);
+

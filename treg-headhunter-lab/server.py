@@ -55,6 +55,8 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         files = {'/': ('index.html', 'text/html; charset=utf-8'),
                  '/app.js': ('app.js', 'text/javascript; charset=utf-8'),
+                 '/review.js': ('review.js', 'text/javascript; charset=utf-8'),
+                 '/review-study.json': ('data/review-study.json', 'application/json; charset=utf-8'),
                  '/data': ('data/observations.json', 'application/json; charset=utf-8')}
         if self.path == '/config':
             return self.send(200, {'live': bool(TOKEN)})
@@ -88,3 +90,4 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', '4386'))
     print(f'寻访研究台：http://127.0.0.1:{port}', flush=True)
     HTTPServer(('127.0.0.1', port), Handler).serve_forever()
+
